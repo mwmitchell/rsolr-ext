@@ -2,90 +2,62 @@ module RSolr
   
   module Params
     
-    module CommonHelpers
+    # basic helpers for formatting strings/array/hashes
+    module HelperMethods
       
+      # returns a quoted or non-quoted string
+      # "value" should be a string
+      # "quote" should be true/false
       def prep_value(value, quote)
         quote ? %("#{value}") : value
       end
-    
-      def build_query(value, quote)
-        case value
-        when Array
-          value.collect do |item|
-            build_query item, quote
-          end.flatten
-        when String,Symbol
-          [prep_value(value.to_s, quote)]
-        when Hash
-          value.collect do |(k,v)|
-            "#{k}:#{build_query(v, quote).join(' ')}"
-          end.flatten
-        else
-          [prep_value(value.to_s, quote)]
-        end
+      
+      # value can be a string, array, hash or symbol
+      # symbols are treated as strings
+      # arrays are recursed through #build_query
+      # keys for hashes are fields for fielded queries, the values are recused through #build_query
+      # strings/symbols are sent to #prep_value for possible quoting
+      #
+      # opts can have:
+      #   :quote=>bool - default false
+      #   :join=>string - default ' '
+      def build_query(value, opts={})
+        opts[:join]||=' '
+        opts[:quote]||=false
+        result = (
+          case value
+          when Array
+            value.collect do |item|
+              build_query item, opts
+            end.flatten
+          when String,Symbol
+            [prep_value(value.to_s, opts[:quote])]
+          when Hash
+            value.collect do |(k,v)|
+              "#{k}:#{build_query(v, opts)}"
+            end.flatten
+          else
+            [prep_value(value.to_s, opts[:quote])]
+          end
+        )
+        opts[:join] ? result.join(opts[:join]) : result
       end
       
-    end
-    
-    class Standard
-      
-      FIELD_LIST = [:per_page, :page, :queries, :phrase_queries, :filters, :phrase_filters, :facets]
-    
-      include CommonHelpers
-    
-      def map(input)
-        output={}
-        FIELD_LIST.each do |field|
-          send("map_#{field}", output, input[field]) unless input[field].to_s.empty?
-        end
-        output
-      end
-    
-      def map_per_page(output,value)
-        value = value.to_s.to_i
-        output[:rows] = value < 0 ? 0 : value
-      end
-    
-      def map_page(output,value)
-        value = value.to_s.to_i
-        page = value > 0 ? value : 1
-        output[:start] = ((page - 1) * (output[:rows] || 0))
-      end
-    
-      def map_facets(output,value)
-        
-      end
-    
-      def map_queries(output,value)
-        output[:q] = build_query(value, false).join(' ')
+      # start_for(2, 10)
+      # calculates the :start value for pagination etc..
+      def start_for(current_page, per_page)
+        page = current_page.to_s.to_i
+        page = page > 0 ? page : 1
+        ((page - 1) * (per_page || 0))
       end
       
-      # add the phrases on to the previously created q param
-      # weed out any empty values, then join on a space
-      def map_phrase_queries(output,value)
-        phrases = build_query(value, true)
-        output[:q] = [output[:q], phrases].reject{|s|s.to_s.empty?}.join(' ')
-      end
+    end # end HelperMethods
     
-      def map_filters(output,value)
-        output[:fq] = build_query(value, false).join(' ')
-      end
-    
-      def map_phrase_filters(output,value)
-        filters = build_query(value, true)
-        output[:fq] = [output[:fq], filters].reject{|s|s.to_s.empty?}.join(' ')
-      end
-  
-    end
-  
-    def self.standard(input)
-      Standard.new.map(input)
+    # Easy access: RSolr::Params::Helper.start_for(page=1, per_page=10)
+    class Helper
+      extend HelperMethods
     end
     
-    def self.dismax(input)
-      Dismax.new.map(input)
-    end
+  end # end Params
   
-  end
-  
-end
+end # end RSolr

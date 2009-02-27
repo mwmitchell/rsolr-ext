@@ -3,124 +3,29 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr_params')
 
 class RSolrParamsTest < Test::Unit::TestCase
   
-  P = RSolr::Params
+  H = RSolr::Params::Helper
   
-  class MH; include RSolr::Params::CommonHelpers; end
-  
-  test 'helper methods' do
+  test 'pre_value' do
     value = 'the man'
-    helper = MH.new
-    # prep_value
-    assert_equal value, helper.prep_value(value, false)
-    assert_equal "\"#{value}\"", helper.prep_value(value, true)
-    # build_query
-    assert_equal ['testing'], helper.build_query('testing', false)
-    assert_equal ['"testing"'], helper.build_query('testing', true)
-    assert_equal ['testing', 'again'], helper.build_query(['testing', 'again'], false)
-    assert_equal ['"testing"', '"again"'], helper.build_query(['testing', 'again'], true)
-    assert_equal ['name:whatever'], helper.build_query({:name=>'whatever'}, false)
-    assert_equal ['name:"whatever"'], helper.build_query({:name=>'whatever'}, true)
-    assert_equal ['sam', 'name:whatever', 'i', 'am'], helper.build_query(['sam', {:name=>'whatever'}, 'i', 'am'], false)
+    assert_equal value, H.prep_value(value, false)
+    assert_equal "\"#{value}\"", H.prep_value(value, :quote=>true)
   end
   
-  # :queries and :phrase_queries -> :q mapping
-  
-  test 'simple :queries->:q mapping' do
-    mapped_params = P.standard(
-      :queries=>'testing'
-    )
-    expected = {:q=>'testing'}
-    assert_equal expected, mapped_params
+  test 'build_query' do
+    assert_equal 'testing', H.build_query('testing')
+    assert_equal '"testing"', H.build_query('testing', :quote=>true)
+    assert_equal 'testing again', H.build_query(['testing', 'again'])
+    assert_equal '"testing" "again"', H.build_query(['testing', 'again'], :quote=>true)
+    assert_equal 'name:whatever', H.build_query({:name=>'whatever'})
+    assert_equal 'name:"whatever"', H.build_query({:name=>'whatever'}, :quote=>true)
+    assert_equal 'sam name:whatever i am', H.build_query(['sam', {:name=>'whatever'}, 'i', 'am'])
+    assert_equal 'testing AND blah', H.build_query(['testing', 'blah'], :join=>' AND ')
   end
   
-  test 'complex :queries->:q mapping' do
-    mapped_params = P.standard(
-      :queries=>['one', 'blah', {:name=>'value'}]
-    )
-    expected = {:q=>'one blah name:value'}
-    assert_equal expected, mapped_params
+  test 'start_for' do
+    per_page = 8
+    current_page = 2
+    assert_equal 8, H.start_for(current_page, per_page)
   end
-  
-  test 'simple phrase/q mapping' do
-    mapped_params = P.standard(
-      :phrase_queries=>['one', {:name=>'Mona'}]
-    )
-    expected = {:q=>'"one" name:"Mona"'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'simple :queries->:q in combination with simple :phrase_queries->:q' do
-    mapped_params = P.standard(
-      :queries=>'blah',
-      :phrase_queries=>'hello'
-    )
-    expected = {:q=>'blah "hello"'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'complex :queries->:q in combination with complex :phrase_queries->:q' do
-    mapped_params = P.standard(
-      :queries=>['blah', {:person=>'frank'}],
-      :phrase_queries=>['hello', {:name=>'frank'}]
-    )
-    expected = {:q=>'blah person:frank "hello" name:"frank"'}
-    assert_equal expected, mapped_params
-  end
-  
-  # :filters -> :fq mapping
-  
-  test 'simple filters/fq mapping' do
-    mapped_params = P.standard(
-      :filters=>'a filter'
-    )
-    expected = {:fq=>'a filter'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'complex (hash) filters/fq mapping' do
-    mapped_params = P.standard(
-      :filters=>{:name=>'fred'}
-    )
-    expected = {:fq=>'name:fred'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'simple phrase_filters/fq mapping' do
-    mapped_params = P.standard(
-      :phrase_filters=>'a filter'
-    )
-    expected = {:fq=>'"a filter"'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'complex (hash) phrase_filters/fq mapping' do
-    mapped_params = P.standard(
-      :phrase_filters=>{:name=>'fred'}
-    )
-    expected = {:fq=>'name:"fred"'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'simple :filters->:fq in combination with simple :phrase_filters->:fq' do
-    mapped_params = P.standard(
-      :filters=>'blah',
-      :phrase_filters=>'hello'
-    )
-    expected = {:fq=>'blah "hello"'}
-    assert_equal expected, mapped_params
-  end
-  
-  test 'complex :filters->:fq in combination with complex :phrase_filters->:fq' do
-    mapped_params = P.standard(
-      :filters=>['blah', {:person=>'frank'}],
-      :phrase_filters=>['hello', {:name=>'frank'}]
-    )
-    expected = {:fq=>'blah person:frank "hello" name:"frank"'}
-    assert_equal expected, mapped_params
-  end
-  
-  # :facets mapping
-  
-  
   
 end

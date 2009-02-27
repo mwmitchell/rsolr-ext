@@ -1,19 +1,2 @@
 =RSolrParams
-A very simple Ruby module for Solr param mapping.
-
-=Usage
-  #standard
-  mapped_params = RSolr::Params.standard(
-    :q=>'one',
-    :filters=>{:name=>'one'},
-    :phrase_queries=>{:name=>'matt'},
-    :phrase_queries=>{:glad=>1}
-  )
-  
-  # dismax
-  mapped_params = RSolr::Params.dismax(
-    :q=>'one',
-    :filters=>{:name=>'one'},
-    :phrase_queries=>{:name=>'matt'},
-    :boost_queries=>{:cat=>'electronics^5.0'}
-  )
+A set of helper methods/modules to assist in building Solr queries for RSolr.
