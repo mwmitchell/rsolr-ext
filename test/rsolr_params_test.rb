@@ -7,8 +7,8 @@ class RSolrParamsTest < Test::Unit::TestCase
   
   test 'pre_value' do
     value = 'the man'
-    assert_equal value, H.prep_value(value, false)
-    assert_equal "\"#{value}\"", H.prep_value(value, :quote=>true)
+    assert_equal 'the man', H.prep_value(value)
+    assert_equal "\"the man\"", H.prep_value(value, :quote=>true)
   end
   
   test 'build_query' do
