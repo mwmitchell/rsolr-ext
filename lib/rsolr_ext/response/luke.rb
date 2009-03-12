@@ -28,6 +28,7 @@ module RSolrExt::Response::Luke
     end.collect{|k,v|k}
   end
   
+  # converts to mash, then extends
   def self.create(hash)
     mash = hash.to_mash
     mash.extend self

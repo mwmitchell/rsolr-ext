@@ -18,5 +18,12 @@ module RSolrExt::Response::Base
   def ok?
     self.status == 0
   end
-
+  
+  # converts to mash, then extends
+  def self.create(hash)
+    mash = hash.to_mash
+    mash.extend self
+    mash
+  end
+  
 end # end Base

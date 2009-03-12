@@ -163,6 +163,7 @@ module RSolrExt::Response::Select
     @docs ||= response[:docs].collect{ |d| d=d.to_mash; d.extend(DocExt); d }
   end
   
+  # converts to mash, then extends
   def self.create(hash)
     mash = hash.to_mash
     mash.extend self
