@@ -1,7 +1,7 @@
 require 'test_unit_test_case'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr_ext')
 
-class RSolrExtTest < Test::Unit::TestCase
+class RSolrExtHelpersTest < Test::Unit::TestCase
   
   H = Object.new
   H.extend RSolrExt::Helpers
