@@ -3,12 +3,13 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr_ext')
 
 class RSolrExtTest < Test::Unit::TestCase
   
-  H = RSolr::Ext::Helper
+  H = Object.new
+  H.extend RSolrExt::Helpers
   
-  test 'pre_value' do
+  test 'prep_value' do
     value = 'the man'
-    assert_equal 'the man', H.prep_value(value)
-    assert_equal "\"the man\"", H.prep_value(value, :quote=>true)
+    assert_equal 'the man', H.prep_value(value, false)
+    assert_equal "\"the man\"", H.prep_value(value, true)
   end
   
   test 'build_query' do
@@ -20,12 +21,6 @@ class RSolrExtTest < Test::Unit::TestCase
     assert_equal 'name:"whatever"', H.build_query({:name=>'whatever'}, :quote=>true)
     assert_equal 'sam name:whatever i am', H.build_query(['sam', {:name=>'whatever'}, 'i', 'am'])
     assert_equal 'testing AND blah', H.build_query(['testing', 'blah'], :join=>' AND ')
-  end
-  
-  test 'start_for' do
-    per_page = 8
-    current_page = 2
-    assert_equal 8, H.start_for(current_page, per_page)
   end
   
 end

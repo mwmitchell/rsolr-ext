@@ -5,7 +5,7 @@ class RSolrExtTest < Test::Unit::TestCase
   
   test 'the :per_page and :page params from the Request::Select::Standard mapper' do
     
-    select_params = RSolr::Ext::Request::Select::Standard.new
+    select_params = RSolrExt::Request::Select::Standard.new
     select_params[:page] = 1
     select_params[:per_page] = 10
     
@@ -25,7 +25,7 @@ class RSolrExtTest < Test::Unit::TestCase
   end
   
   test 'the :q and :phrases params from the Request::Select::Standard mapper' do
-    select_params = RSolr::Ext::Request::Select::Standard.new
+    select_params = RSolrExt::Request::Select::Standard.new
     select_params[:q] = 'mp3'
     select_params[:phrases] = {:manu=>'Apple'}
     
@@ -39,7 +39,7 @@ class RSolrExtTest < Test::Unit::TestCase
   end
   
   test 'the :fq and :filters params from the Request::Select::Standard mapper' do
-    select_params = RSolr::Ext::Request::Select::Standard.new
+    select_params = RSolrExt::Request::Select::Standard.new
     select_params[:fq] = 'price:[50 TO 200]'
     select_params[:filters] = {:manu=>'Apple'}
     
@@ -53,7 +53,7 @@ class RSolrExtTest < Test::Unit::TestCase
   end
   
   test 'the :fq, :filters and :filter_phrases params from the Request::Select::Standard mapper' do
-    select_params = RSolr::Ext::Request::Select::Standard.new
+    select_params = RSolrExt::Request::Select::Standard.new
     select_params[:fq] = 'price:[50 TO 200]'
     select_params[:filters] = {:manu=>'Apple'}
     select_params[:phrase_filters] = {:name=>'iPod'}
@@ -69,13 +69,12 @@ class RSolrExtTest < Test::Unit::TestCase
   end
   
   test 'the :facets param from the Request::Select::Standard mapper' do
-    select_params = RSolr::Ext::Request::Select::Standard.new
+    select_params = RSolrExt::Request::Select::Standard.new
     select_params[:facets] = {
       :queries => 'price:[50 TO 200]',
       :fields=>['manu', 'price_range']
     }
     params = select_params.to_solr
-    puts params.inspect
   end
   
 end
