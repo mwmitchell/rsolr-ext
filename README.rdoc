@@ -1,2 +1,22 @@
 =RSolrExt
 A set of helper methods/modules to assist in building Solr queries and handling responses for RSolr.
+
+==Examples
+
+===Params
+  params = RSolrExt::Params.create_fielded_queries(:name=>'a string...', :cat=>[:one, :two])
+  params == ['name:"a string..."', 'cat:"one"', 'cat:"two"']
+
+The params hash can then be passed into RSolr for fielded querying.
+
+===Select
+  solr_hash = {} # an evaluated solr (ruby) hash
+  response = RSolrExt::Response::Select.create(solr_hash)
+  response.docs.each do |d|
+    puts d[:cat]
+  end
+  puts response.facets.inspect
+  
+====Pagination
+In your view (using will_paginate):
+  <%= will_paginate(response) %>

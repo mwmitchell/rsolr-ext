@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.name = "rsolr_ext"
-	s.version = "0.0.5"
-	s.date = "2009-03-11"
+	s.version = "0.1.0"
+	s.date = "2009-03-12"
 	s.summary = "An extension lib for RSolr"
 	s.email = "goodieboy@gmail.com"
 	s.homepage = "http://github.com/mwmitchell/rsolr_ext"
@@ -10,10 +10,12 @@ Gem::Specification.new do |s|
 	s.authors = ["Matt Mitchell"]
 	s.files = [
 	"lib/rsolr_ext.rb",
-	"lib/rsolr_ext/helpers",
-	"lib/rsolr_ext/request",
+	"lib/rsolr_ext/params",
 	"lib/rsolr_ext/response",
-	"lib/rsolr_ext/to_solrable",
+	"lib/rsolr_ext/response/base",
+	"lib/rsolr_ext/response/luke",
+	"lib/rsolr_ext/response/select",
+	"lib/rsolr_ext/response/update",
 	"LICENSE",
 	"README.rdoc",
 	"rsolr_ext.gemspec"
