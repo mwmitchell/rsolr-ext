@@ -1,2 +1,2 @@
-=RSolr::Ext
-A set of helper methods/modules to assist in building Solr queries for RSolr. The tests say it all.
+=RSolrExt
+A set of helper methods/modules to assist in building Solr queries and handling responses for RSolr.
