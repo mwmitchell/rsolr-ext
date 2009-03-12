@@ -1,2 +1,2 @@
-=RSolrParams
+=RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries for RSolr. The tests say it all.

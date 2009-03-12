@@ -1,9 +1,9 @@
 require 'test_unit_test_case'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr_params')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr_ext')
 
-class RSolrParamsTest < Test::Unit::TestCase
+class RSolrExtTest < Test::Unit::TestCase
   
-  H = RSolr::Params::Helper
+  H = RSolr::Ext::Helper
   
   test 'pre_value' do
     value = 'the man'
