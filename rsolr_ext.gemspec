@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 	"lib/rsolr_ext/to_solrable",
 	"LICENSE",
 	"README.rdoc",
-	"rsolr_params.gemspec"
+	"rsolr_ext.gemspec"
 	]
 	s.test_files = ['test/rsolr_ext_standard_test.rb', 'test/rsolr_ext_test.rb', 'test/test_unit_test_case.rb']
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
