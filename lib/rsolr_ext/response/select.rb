@@ -40,14 +40,16 @@ module RSolrExt::Response::Select
   end
 
   module Facets
-
+    
+    # represents a facet value; which is a field value and its hit count
     class FacetValue
       attr_reader :value,:hits
       def initialize(value,hits)
         @value,@hits=value,hits
       end
     end
-
+    
+    # represents a facet; which is a field and its values
     class Facet
       attr_reader :field
       attr_accessor :values
@@ -57,7 +59,7 @@ module RSolrExt::Response::Select
       end
     end
 
-    # @response.facet_fields.each do |facet|
+    # @response.facets.each do |facet|
     #   facet.field
     # end
     # "caches" the result in the @facets instance var
@@ -85,23 +87,23 @@ module RSolrExt::Response::Select
         facets.detect{|facet|facet.field.to_s == name.to_s}
       )
     end
-
+    
     def facet_counts
-      @facets ||= self['facet_counts'] || {}
+      @facet_counts ||= self[:facet_counts] || {}
     end
 
     # Returns the hash of all the facet_fields (ie: {'instock_b' => ['true', 123, 'false', 20]}
     def facet_fields
-      @facet_fields ||= facet_counts['facet_fields'] || {}
+      @facet_fields ||= facet_counts[:facet_fields] || {}
     end
 
     # Returns all of the facet queries
     def facet_queries
-      @facet_queries ||= facet_counts['facet_queries'] || {}
+      @facet_queries ||= facet_counts[:facet_queries] || {}
     end
-
-  end
-
+    
+  end # end Facets
+  
   #
   #
   #
@@ -109,7 +111,7 @@ module RSolrExt::Response::Select
 
     # alias to the Solr param, 'rows'
     def per_page
-      @per_page ||= params['rows'].to_s.to_i
+      @per_page ||= params[:rows].to_s.to_i
     end
 
     # Returns the current page calculated from 'rows' and 'start'
@@ -136,13 +138,13 @@ module RSolrExt::Response::Select
       @next_page ||= (current_page < total_pages) ? current_page + 1 : total_pages
     end
 
-  end
-
-  # The base query response class
-  # adds to the Solr::Response::Base class by defining a few more attributes,
-  # includes the Pagination module, and extends each of the doc hashes
-  # with Solr::Response::Query::DocExt
-  # include the top level response::base module
+  end # end Pagination
+  
+  # The main select response class.
+  # Includes the top level Response::Base module
+  # Includes the Pagination module.
+  # Each solr hash doc is extended by the DocExt module.
+  
   include RSolrExt::Response::Base
   include Pagination
   include Facets
