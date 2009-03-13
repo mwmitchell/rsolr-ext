@@ -13,7 +13,7 @@ end
 
 module RSolrExt
   
-  VERSION = '0.1.0'
+  VERSION = '0.2.0'
   
   autoload :Params, 'rsolr_ext/params'
   autoload :Response, 'rsolr_ext/response'

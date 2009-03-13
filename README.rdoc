@@ -9,14 +9,26 @@ A set of helper methods/modules to assist in building Solr queries and handling 
 
 The params hash can then be passed into RSolr for fielded querying.
 
+===Base
+  solr_hash = {} # an evaluated solr (ruby) response hash
+  response = RSolrExt::Response::Base.create(solr_hash)
+
 ===Select
-  solr_hash = {} # an evaluated solr (ruby) hash
+  solr_hash = {} # an evaluated solr (ruby) response hash
   response = RSolrExt::Response::Select.create(solr_hash)
   response.docs.each do |d|
     puts d[:cat]
   end
   puts response.facets.inspect
-  
+
 ====Pagination
-In your view (using will_paginate):
+When using the RSolrExt::Response::Select extension, pagination becomes very easy. In your view (using will_paginate):
   <%= will_paginate(response) %>
+
+===Update
+  solr_hash = {} # an evaluated solr (ruby) response hash
+  response = RSolrExt::Response::Update.create(solr_hash)
+
+===Luke
+  solr_hash = {} # an evaluated solr (ruby) response hash
+  response = RSolrExt::Response::Luke.create(solr_hash)
