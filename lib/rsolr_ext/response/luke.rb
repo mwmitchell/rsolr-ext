@@ -45,7 +45,7 @@ module RSolrExt::Response::Luke
   
   # converts to mash, then extends
   def self.create(hash)
-    mash = hash.to_mash
+    mash = hash.is_a?(Mash) ? hash : hash.to_mash
     mash.extend self
     mash
   end

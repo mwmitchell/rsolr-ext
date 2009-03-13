@@ -107,23 +107,27 @@ module RSolrExt::Response::Select
   #
   #
   #
-  module Pagination
-
-    # alias to the Solr param, 'rows'
-    def per_page
-      @per_page ||= params[:rows].to_s.to_i
+  class Paginator
+    
+    attr_reader :start, :per_page, :total
+    
+    def initialize(start, per_page, total)
+      @start = start.to_s.to_i
+      @per_page = per_page.to_s.to_i
+      @total = total.to_s.to_i
     end
-
+    
     # Returns the current page calculated from 'rows' and 'start'
     # WillPaginate hook
     def current_page
-      @current_page ||= (self.start / self.per_page).ceil + 1
+      return 1 if start < 1
+      @current_page ||= (start / per_page).ceil + 1
     end
 
     # Calcuates the total pages from 'numFound' and 'rows'
     # WillPaginate hook
     def total_pages
-      @total_pages ||= self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
+      @total_pages ||= per_page > 0 ? (total / per_page.to_f).ceil : 1
     end
 
     # returns the previous page number or 1
@@ -131,14 +135,17 @@ module RSolrExt::Response::Select
     def previous_page
       @previous_page ||= (current_page > 1) ? current_page - 1 : 1
     end
-
+    
     # returns the next page number or the last
     # WillPaginate hook
     def next_page
       @next_page ||= (current_page < total_pages) ? current_page + 1 : total_pages
     end
-
-  end # end Pagination
+  end
+  
+  def paginator
+    @paginator ||= Paginator.new(start, rows, total)
+  end
   
   # The main select response class.
   # Includes the top level Response::Base module
@@ -146,7 +153,6 @@ module RSolrExt::Response::Select
   # Each solr hash doc is extended by the DocExt module.
   
   include RSolrExt::Response::Base
-  include Pagination
   include Facets
   
   def response
@@ -161,6 +167,10 @@ module RSolrExt::Response::Select
     response[:start]
   end
   
+  def rows
+    params[:rows]
+  end
+  
   alias :total :num_found
   alias :offset :start
   
@@ -170,7 +180,7 @@ module RSolrExt::Response::Select
   
   # converts to mash, then extends
   def self.create(hash)
-    mash = hash.to_mash
+    mash = hash.is_a?(Mash) ? hash : hash.to_mash
     mash.extend self
     mash
   end

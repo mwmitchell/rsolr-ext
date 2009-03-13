@@ -17,7 +17,7 @@ class RSolrExt::Params
   def self.calculate_start(page, rows)
     page = page.to_s.to_i-1
     page = page < 1 ? 0 : page
-    page * rows
+    page * rows.to_i
   end
   
 end
