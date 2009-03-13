@@ -5,16 +5,22 @@
 #
 module RSolrExt::Response::Base
   
-  # create the method accessors
-  {
-    :header=>:responseHeader,
-    :params=>:params,
-    :status=>:status,
-    :query_time=>:QTime
-  }.each_pair do |k,v|
-    define_method(k){self[v]}
+  def header
+    self[:responseHeader]
   end
-
+  
+  def params
+    header[:params]
+  end
+  
+  def status
+    header[:status].to_i
+  end
+  
+  def query_time
+    header[:QTime]
+  end
+  
   def ok?
     self.status == 0
   end

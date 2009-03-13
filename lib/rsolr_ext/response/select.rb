@@ -1,6 +1,6 @@
 module RSolrExt::Response::Select
   
-  # module for adding helper methods to each Hash document
+  # module for adding helper methods to each solr response[:docs] object
   module DocExt
 
     # Helper method to check if value/multi-values exist for a given key.
@@ -149,18 +149,21 @@ module RSolrExt::Response::Select
   include Pagination
   include Facets
   
-  # add the key methods (hash[:numFound] becomes hash.num_found)
-  {
-    :response=>:response,
-    :num_found=>:numFound,
-    :start=>:start
-  }.each_pair do |k,v|
-    define_method(k){self[v]}
+  def response
+    self[:response]
   end
-
+  
+  def num_found
+    response[:numFound]
+  end
+  
+  def start
+    response[:start]
+  end
+  
   alias :total :num_found
   alias :offset :start
-
+  
   def docs
     @docs ||= response[:docs].collect{ |d| d=d.to_mash; d.extend(DocExt); d }
   end
