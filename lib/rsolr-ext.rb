@@ -11,11 +11,15 @@ unless Hash.respond_to?(:to_mash)
   require 'core_ext'
 end
 
-module RSolrExt
+module RSolr
   
-  VERSION = '0.2.1'
+  module Ext
+    
+    VERSION = '0.2.1'
+    
+    autoload :Request, 'rsolr-ext/request.rb'
+    autoload :Response, 'rsolr-ext/response.rb'
+    
+  end
   
-  autoload :Params, 'rsolr_ext/params'
-  autoload :Response, 'rsolr_ext/response'
-  
-end # end RSolrExt
+end

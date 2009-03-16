@@ -1,4 +1,4 @@
-module RSolrExt::Response::Select
+module RSolr::Ext::Response::Select
   
   # module for adding helper methods to each solr response[:docs] object
   module DocExt
@@ -180,7 +180,7 @@ module RSolrExt::Response::Select
   # Includes the Pagination module.
   # Each solr hash doc is extended by the DocExt module.
   
-  include RSolrExt::Response::Base
+  include RSolr::Ext::Response::Base
   include Facets
   
   def response

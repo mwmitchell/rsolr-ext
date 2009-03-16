@@ -1,5 +1,5 @@
 # for update responses
-module RSolrExt::Response::Update
+module RSolr::Ext::Response::Update
   
   include Base
   

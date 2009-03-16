@@ -3,7 +3,7 @@
 # my_solr_hash.header
 # my_solr_hash.ok?
 #
-module RSolrExt::Response::Base
+module RSolr::Ext::Response::Base
   
   def header
     self[:responseHeader]

@@ -1,4 +1,4 @@
-module RSolrExt::Response::Luke
+module RSolr::Ext::Response::Luke
   
   include Base
   
