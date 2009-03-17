@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
     "rsolr-ext.gemspec"
 	]
 	s.test_files = [
-	  'test/hash_methodizer_test.rb'
+	  'test/hash_methodizer_test.rb',
 	  'test/request_test.rb',
 	  'test/response_test.rb',
 	  'test/test_unit_test_case.rb',
