@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "rsolr-ext"
-	s.version = "0.5.1"
+	s.version = "0.5.2"
 	s.date = "2009-03-17"
 	s.summary = "An extension lib for RSolr"
 	s.email = "goodieboy@gmail.com"
@@ -31,6 +31,12 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "rsolr-ext.gemspec"
 	]
-	s.test_files = ['test/request_test.rb', 'test/response_test.rb', 'test/test_unit_test_case.rb', 'test/helper.rb']
+	s.test_files = [
+	  'test/hash_methodizer_test.rb'
+	  'test/request_test.rb',
+	  'test/response_test.rb',
+	  'test/test_unit_test_case.rb',
+	  'test/helper.rb'
+	]
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
 end
