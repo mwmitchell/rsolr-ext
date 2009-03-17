@@ -20,6 +20,7 @@ class RSolr::Ext::HashMethodizer
     def methodize!(h)
       h.keys.each do |k|
         meth = snake_case(k)
+        meth = meth.gsub(/[^_a-z]/i, '_').gsub(/^_+/i, '')
         val_key = case k
         when String
           "'#{k}'"

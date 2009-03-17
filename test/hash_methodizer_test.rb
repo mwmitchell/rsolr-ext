@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
 class RSolrExtRequestTest < Test::Unit::TestCase
   
   def testable_hash
-    {:name=>'Sam', :age=>90, :kids=>['Fred', 'Betty'], :favorites=>{:red=>1, :blue=>9}}
+    {';key-with-invalid-method-chars'=>1, :name=>'Sam', :age=>90, :kids=>['Fred', 'Betty'], :favorites=>{:red=>1, :blue=>9}}
   end
   
   test 'the default behavior of a hash, after methodize!' do
@@ -28,6 +28,8 @@ class RSolrExtRequestTest < Test::Unit::TestCase
     
     # make sure that the difference in method size is the size of the keys in my_hash
     assert_equal my_hash.methods.size - key_count, original_methods.size
+    
+    assert my_hash.respond_to?(:key_with_invalid_method_chars)
   end
   
   test 'the method accessors on a modified hash' do
