@@ -20,10 +20,17 @@ class RSolr::Ext::HashMethodizer
     def methodize!(h)
       h.keys.each do |k|
         meth = snake_case(k)
-        h.instance_variable_set("@#{k}", h[k])
+        val_key = case k
+        when String
+          "'#{k}'"
+        when Symbol
+          ":#{k}"
+        else
+          raise 'Supports only string/symbol keys!'
+        end
         h.instance_eval <<-RUBY
         def #{meth}
-          val = @#{k}
+          val = self[#{val_key}]
           if val.respond_to?(:each_pair)
             RSolr::Ext::HashMethodizer.methodize!(val)
           elsif val.is_a?(Array)
