@@ -36,7 +36,7 @@ module RSolr::Ext::Response
       d.extend Pageable
       d.start = response_header.params[:start].to_s.to_i
       d.per_page = response_header.params[:rows].to_s.to_i
-      d.total = d.size
+      d.total = response.num_found
     end
     
   end
