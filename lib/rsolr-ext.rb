@@ -15,11 +15,12 @@ module RSolr
   
   module Ext
     
-    VERSION = '0.5.0'
+    VERSION = '0.5.1'
     
     autoload :Request, 'rsolr-ext/request.rb'
     autoload :Response, 'rsolr-ext/response.rb'
     autoload :HashMethodizer, 'rsolr-ext/hash_methodizer.rb'
+    autoload :Mapable, 'rsolr-ext/mapable.rb'
     
   end
   

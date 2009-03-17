@@ -1,8 +1,17 @@
+#
+# A hash modifier that creates method readers from key names.
+# NOTE: reader methods are created recursively.
+# The method names are the same as the key names,
+# except that the values are snake-cased, for example:
+#   - QTime -> q_time
+#   - debugQuery -> debug_query
+#
 class RSolr::Ext::HashMethodizer
   
   class << self
     
     def snake_case(v)
+      v = v.to_s
       return v.downcase if v =~ /^[A-Z]+$/
       v.gsub(/([A-Z]+)(?=[A-Z][a-z]?)|\B[A-Z]/, '_\&') =~ /_*(.*)/
       return $+.downcase
