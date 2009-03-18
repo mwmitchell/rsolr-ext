@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.name = "rsolr-ext"
-	s.version = "0.5.6"
-	s.date = "2009-03-17"
+	s.version = "0.5.7"
+	s.date = "2009-03-18"
 	s.summary = "An extension lib for RSolr"
 	s.email = "goodieboy@gmail.com"
 	s.homepage = "http://github.com/mwmitchell/rsolr_ext"
@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
     "lib/core_ext.rb",
     "lib/mash.rb",
     
-    "lib/rsolr-ext/hash_methodizer.rb",
     "lib/rsolr-ext/mapable.rb",
     
     "lib/rsolr-ext/request/queryable.rb",
@@ -32,7 +31,6 @@ Gem::Specification.new do |s|
     "rsolr-ext.gemspec"
 	]
 	s.test_files = [
-	  'test/hash_methodizer_test.rb',
 	  'test/request_test.rb',
 	  'test/response_test.rb',
 	  'test/test_unit_test_case.rb',
