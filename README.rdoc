@@ -1,6 +1,8 @@
 =RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries and handling responses when using the RSolr library.
 
+NOTE: The API for RSolr::Ext is pre 1.0. Things are be changing!
+
 ==Request Example
   std = RSolr::Ext::Request::Standard.new
   
@@ -23,9 +25,9 @@ A set of helper methods/modules to assist in building Solr queries and handling 
   raw_response = rsolr.select(:q=>'*:*)
   r = RSolr::Ext::Response::Standard.new(raw_response)
   
-  r.response_header.params
-  r.response.docs
-  r.response.docs.previous_page
+  r.header[:params]
+  r.response[:docs]
+  r.response[:docs].previous_page
 
 ===Doc Pagination
 After creating a RSolr::Ext::Response object, pass-in the response.docs to the will_paginate view helper:
@@ -33,4 +35,4 @@ After creating a RSolr::Ext::Response object, pass-in the response.docs to the w
   raw_response = rsolr.select(:q=>'*:*)
   @response = RSolr::Ext::Response::Standard.new(raw_response)
   # in view:
-  <%= will_paginate @response.response.docs %>
+  <%= will_paginate @response.response[:docs] %>
