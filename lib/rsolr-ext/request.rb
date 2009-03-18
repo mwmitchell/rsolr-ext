@@ -15,11 +15,11 @@ module RSolr::Ext::Request
       :phrase_filters, # quoted fq params,
       :facets
     ]
-
+    
     def map_per_page(value,output)
       output[:rows] = value.to_i
     end
-
+    
     def map_page(value,output)
       raise ':per_page must be set when using :page' unless output[:rows]
       page = value.to_s.to_i-1

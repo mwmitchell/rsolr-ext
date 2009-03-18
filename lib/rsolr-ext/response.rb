@@ -6,16 +6,12 @@ module RSolr::Ext::Response
   
   class Base < Mash
     
-    attr_reader :raw_response
-    
-    def initialize(raw_response)
-      @raw_response = raw_response
-      super(raw_response)
-      RSolr::Ext::HashMethodizer.methodize!(self)
+    def header
+      self[:responseHeader]
     end
     
     def ok?
-      response_header.status == 0
+      header[:status] == 0
     end
     
   end
@@ -26,17 +22,27 @@ module RSolr::Ext::Response
     include Facetable
     
     def initialize(*a)
-      super
+      super(*a)
       activate_pagination!
     end
     
+    def response
+      self[:response]
+    end
+    
+    def docs
+      response[:docs]
+    end
+    
+    private
+    
     def activate_pagination!
-      response.docs.each{ |d| d.extend DocExt }
-      d = response.docs
+      d = self[:response][:docs]
+      d.each{|dhash| dhash.extend DocExt }
       d.extend Pageable
-      d.start = response_header.params[:start].to_s.to_i
-      d.per_page = response_header.params[:rows].to_s.to_i
-      d.total = response.num_found
+      d.start = self[:responseHeader][:params][:start].to_s.to_i
+      d.per_page = self[:responseHeader][:params][:rows].to_s.to_i
+      d.total = self[:response][:numFound]
     end
     
   end
@@ -46,13 +52,13 @@ module RSolr::Ext::Response
   end
   
   # 
-  class RSolr::Ext::Response::Luke < Base
+  class Luke < Base
     
     # Returns an array of fields from the index
     # An optional rule can be used for "grepping" field names:
     # field_list(/_facet$/)
     def field_list(rule=nil)
-      fetch(:fields).select do |k,v|
+      self[:fields].select do |k,v|
         rule ? k =~ rule : true
       end.collect{|k,v|k}
     end
