@@ -32,11 +32,11 @@ module RSolr::Ext::Request
     end
 
     def map_filters(value,output)
-      output[:fq] = append_to_param(output[:fq], build_query(value))
+      output[:fq] = append_to_param(output[:fq], build_query(value), false)
     end
 
     def map_phrase_filters(value,output)
-      output[:fq] = append_to_param(output[:fq], build_query(value, true))
+      output[:fq] = append_to_param(output[:fq], build_query(value, true), false)
     end
     
     def map_facets(value,output)

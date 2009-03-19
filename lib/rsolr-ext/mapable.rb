@@ -38,7 +38,7 @@ module RSolr::Ext::Mapable
   def append_to_param(existing_value, new_value, auto_join=true)
     values = [existing_value, new_value]
     values.delete_if{|v|v.nil?}
-    auto_join ? values.join(' ') : values
+    auto_join ? values.join(' ') : values.flatten
   end
   
 end

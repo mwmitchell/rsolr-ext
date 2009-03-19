@@ -14,12 +14,21 @@ class RSolrExtRequestTest < Test::Unit::TestCase
       :q=>'ipod',
       :facets=>{:fields=>['cat', 'blah']}
     )
-    assert_equal "test price:[1 TO 10] manu:\"Apple\"", solr_params[:fq]
+    assert_equal ["test", "price:[1 TO 10]", "manu:\"Apple\""], solr_params[:fq]
     assert_equal 10, solr_params[:start]
     assert_equal 10, solr_params[:rows]
     assert_equal "ipod name:\"This is a phrase\"", solr_params[:q]
     assert_equal ['cat', 'blah'], solr_params['facet.field']
     assert_equal true, solr_params[:facet]
+  end
+  
+  test 'fq param using the phrase_filters mapping' do
+    std = RSolr::Ext::Request::Standard.new
+    solr_params = std.map(
+      :phrase_filters=>[{:manu=>'Apple'}, {:color=>'red'}]
+    )
+    assert solr_params[:fq].is_a?(Array)
+    assert solr_params[:fq].first.is_a?(String)
   end
   
 end
