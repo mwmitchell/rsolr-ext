@@ -1,7 +1,7 @@
-module RSolr::Ext::Response::Facetable
+module RSolr::Ext::Response::Facets
   
   # represents a facet value; which is a field value and its hit count
-  class FacetValue
+  class FacetItem
     attr_reader :value,:hits
     def initialize(value,hits)
       @value,@hits=value,hits
@@ -9,12 +9,12 @@ module RSolr::Ext::Response::Facetable
   end
   
   # represents a facet; which is a field and its values
-  class Facet
-    attr_reader :field
-    attr_accessor :values
-    def initialize(field)
-      @field=field
-      @values=[]
+  class FacetField
+    attr_reader :name
+    attr_accessor :items
+    def initialize(name)
+      @name=name
+      @items=[]
     end
   end
 
@@ -25,25 +25,33 @@ module RSolr::Ext::Response::Facetable
   def facets
     # memoize!
     @facets ||= (
-      facet_fields.inject([]) do |acc,(facet_field_name,values_and_hits_list)|
-        acc << facet = Facet.new(facet_field_name)
+      all = facet_fields.collect do |(facet_field_name,values_and_hits_list)|
+        facet = FacetField.new(facet_field_name)
         # the values_and_hits_list is an array where a value is immediately followed by it's hit count
         # so we shift off an item (the value)
         while value = values_and_hits_list.shift
           # and then shift off the next to get the hit value
-          facet.values << FacetValue.new(value, values_and_hits_list.shift)
+          facet.items << FacetItem.new(value, values_and_hits_list.shift)
           # repeat until there are no more pairs in the values_and_hits_list array
         end
-        acc
+        facet
       end
+      #all.extend RSolr::Ext::Response::Docs::Pageable
+      #all.start = header['params']['facet.offset'].to_s.to_i
+      #all.per_page = header['params']['facet.limit'].to_s.to_i - 1
+      #all.total = -1
+      ## override the has_next? method -- when paging through facets,
+      ## it's not possible to know how many "pages" there are
+      #all.instance_eval "def has_next?; #{all.size == all.per_page+1} end"
+      all
     )
   end
-
+  
   # pass in a facet field name and get back a Facet instance
   def facet_by_field_name(name)
     @facets_by_field_name ||= {}
     @facets_by_field_name[name] ||= (
-      facets.detect{|facet|facet.field.to_s == name.to_s}
+      facets.detect{|facet|facet.name.to_s == name.to_s}
     )
   end
   

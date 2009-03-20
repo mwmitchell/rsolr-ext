@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.name = "rsolr-ext"
-	s.version = "0.5.8"
-	s.date = "2009-03-18"
+	s.version = "0.5.9"
+	s.date = "2009-03-20"
 	s.summary = "An extension lib for RSolr"
 	s.email = "goodieboy@gmail.com"
 	s.homepage = "http://github.com/mwmitchell/rsolr_ext"
@@ -18,10 +18,8 @@ Gem::Specification.new do |s|
     "lib/rsolr-ext/request/queryable.rb",
     "lib/rsolr-ext/request.rb",
     
-    "lib/rsolr-ext/response/doc_ext.rb",
-    "lib/rsolr-ext/response/facet_paginator.rb",
-    "lib/rsolr-ext/response/facetable.rb",
-    "lib/rsolr-ext/response/pageable.rb",
+    "lib/rsolr-ext/response/docs.rb",
+    "lib/rsolr-ext/response/facets.rb",
     "lib/rsolr-ext/response.rb",
     
     "lib/rsolr-ext.rb",

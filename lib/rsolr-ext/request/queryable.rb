@@ -23,7 +23,7 @@ module RSolr::Ext::Request::Queryable
   def build_query(value, quote_string=false)
     case value
     when String,Symbol
-      return quote_string ? quote(value.to_s) : value.to_s
+      quote_string ? quote(value.to_s) : value.to_s
     when Array
       value.collect do |v|
         build_query(v, quote_string)
