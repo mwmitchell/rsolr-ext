@@ -54,15 +54,16 @@ module RSolr::Ext::Findable
         response['response']['docs'][i] = yield(doc)
       end
     end
-    if mode == :first
-      # return only one doc
-      response['response']['docs'].first
-    elsif opts[:include_response] == false
-      # return all docs
-      response['response']['docs']
-    else
-      # return the entire response
+    if opts[:include_response] == true
       response
+    else
+      if mode == :first
+        # return only one doc
+        response['response']['docs'].first
+      else
+        # return all docs
+        response['response']['docs']
+      end
     end
   end
   
