@@ -56,17 +56,17 @@ module RSolr::Ext::Response::Facets
   end
   
   def facet_counts
-    @facet_counts ||= self[:facet_counts] || {}
+    @facet_counts ||= self['facet_counts'] || {}
   end
 
   # Returns the hash of all the facet_fields (ie: {'instock_b' => ['true', 123, 'false', 20]}
   def facet_fields
-    @facet_fields ||= facet_counts[:facet_fields] || {}
+    @facet_fields ||= facet_counts['facet_fields'] || {}
   end
 
   # Returns all of the facet queries
   def facet_queries
-    @facet_queries ||= facet_counts[:facet_queries] || {}
+    @facet_queries ||= facet_counts['facet_queries'] || {}
   end
   
 end # end Facets

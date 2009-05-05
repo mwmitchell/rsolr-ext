@@ -6,15 +6,15 @@ module RSolr::Ext::Response
   class Base < Mash
     
     def header
-      self[:responseHeader]
+      self['responseHeader']
     end
     
     def params
-      header[:params]
+      header['params']
     end
     
     def ok?
-      header[:status] == 0
+      header['status'] == 0
     end
     
   end
@@ -29,7 +29,7 @@ module RSolr::Ext::Response
     end
     
     def response
-      self[:response]
+      self['response']
     end
     
   end
@@ -51,7 +51,7 @@ module RSolr::Ext::Response
     end
     
     def fields
-      self[:fields]
+      self['fields']
     end
 
   end# end Luke

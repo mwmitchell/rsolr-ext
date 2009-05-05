@@ -81,16 +81,16 @@ module RSolr::Ext::Response::Docs
   end
   
   def self.extended(base)
-    d = base.response[:docs]
+    d = base['response']['docs']
     d.extend Pageable
     d.each{|item|item.extend Accessable}
-    d.start = base.header[:params][:start].to_s.to_i
-    d.per_page = base.header[:params][:rows].to_s.to_i
-    d.total = base.response[:numFound].to_s.to_i
+    d.start = base['responseHeader']['params']['start'].to_s.to_i
+    d.per_page = base['responseHeader']['params']['rows'].to_s.to_i
+    d.total = base['responseHeader']['numFound'].to_s.to_i
   end
   
   def docs
-    response[:docs]
+    response['docs']
   end
   
 end
