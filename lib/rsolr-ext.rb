@@ -23,12 +23,13 @@ module RSolr
   
   module Ext
     
-    VERSION = '0.7.1'
+    VERSION = '0.7.5'
     
     autoload :Request, 'rsolr-ext/request.rb'
     autoload :Response, 'rsolr-ext/response.rb'
     autoload :Mapable, 'rsolr-ext/mapable.rb'
     autoload :Findable, 'rsolr-ext/findable.rb'
+    autoload :Doc, 'rsolr-ext/doc.rb'
     
     # RSolr::Ext.map_params({})
     def self.map_params(r)

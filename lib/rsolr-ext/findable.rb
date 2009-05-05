@@ -36,10 +36,6 @@ module RSolr::Ext::Findable
     
     opts[:include_response] = false unless opts.key?(:include_response)
     
-    if solr_params.is_a?(String)
-      solr_params = {:q=>solr_params}
-    end
-    
     solr_params[:rows] = 1 if mode == :first
     valid_solr_params = RSolr::Ext.map_params(solr_params)
     
@@ -85,6 +81,10 @@ module RSolr::Ext::Findable
     end
     # extract solr params
     solr_params = args.shift || {}
+    # create a hash if a string was passed in...
+    unless solr_params.respond_to?(:each_pair)
+      solr_params = {:q=>solr_params}
+    end
     # extract options
     opts = args.shift || {}
     [mode, solr_params, opts]
