@@ -60,3 +60,19 @@ The #find method provides a convenient way to search solr. Here are some example
   
   # q=something -- the entire response
   solr_response = solr.find {:q=>'something'}, :include_response=>true
+
+===The Doc Module
+You can create your own "models" using RSolr::Ext::Doc
+  class Book
+    include RSolr::Ext::Doc
+    @default_params = {:fq=>'object_type:"book"', :rows=>10}
+    
+    def self.find_by_author(author)
+        find(:phrase_filters=>{:author=>author})
+    end
+  end
+  
+  all_books = Book.find('*:*')
+  hawk_books = Book.find_by_author('hawk')
+
+If you wanna paginate, just throw the collection into the WillPaginate view helper.
