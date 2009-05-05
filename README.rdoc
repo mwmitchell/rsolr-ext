@@ -47,14 +47,16 @@ The object returned is an RSolr::Connection::Adapter (Direct or HTTP) with addit
 
 The #find method provides a convenient way to search solr. Here are some examples:
   
+  solr = RSolr::Ext.connect
+  
   # q=jefferson - returns all docs
-  all_jefferson_docs = find 'jefferson'
+  all_jefferson_docs = solr.find 'jefferson'
   
   # q=jefferson&rows=1 -- first doc only
-  a_single_jefferson_doc = find :first, 'jefferson'
+  a_single_jefferson_doc = solr.find :first, 'jefferson'
   
   # q=jefferson&fq=type:"book" - all docs
-  books_about_jefferson = find 'jefferson', :phrase_filters=>{:type=>'book'}
+  books_about_jefferson = solr.find 'jefferson', :phrase_filters=>{:type=>'book'}
   
   # q=something -- the entire response
-  solr_response = find {:q=>'something'}, :include_response=>true
+  solr_response = solr.find {:q=>'something'}, :include_response=>true
