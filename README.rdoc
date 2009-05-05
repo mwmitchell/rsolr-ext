@@ -1,18 +1,14 @@
 =RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries and handling responses when using the RSolr library.
 
-NOTE: The API for RSolr::Ext is pre 1.0. Things are changing quickly...
-
 ==Request Example
-  std = RSolr::Ext::Request::Standard.new
-  
-  solr_params = std.map(
+  solr_params = RSolr::Ext.map_params(
     :page=>2,
     :per_page=>10,
     :phrases=>{:name=>'This is a phrase'},
     :filters=>['test', {:price=>(1..10)}],
     :phrase_filters=>{:manu=>['Apple']},
-    :q=>'ipod',
+    :queries=>'ipod',
     :facets=>{:fields=>['cat', 'blah']}
   )
   
@@ -24,7 +20,7 @@ NOTE: The API for RSolr::Ext is pre 1.0. Things are changing quickly...
   rsolr = RSolr.connect
   
   raw_response = rsolr.select(:q=>'*:*)
-  r = RSolr::Ext::Response::Standard.new(raw_response)
+  r = RSolr::Ext::wrap_response(raw_response)
   
   r.ok?
   r.params
@@ -32,11 +28,33 @@ NOTE: The API for RSolr::Ext is pre 1.0. Things are changing quickly...
   r.docs.previous_page
   r.docs.next_page
   r.facets
-  
+
+You can access values in the response hash using symbols or strings.
+
 ===Doc Pagination
 After creating a RSolr::Ext::Response object, pass-in the response.docs to the will_paginate view helper:
   rsolr = RSolr.connect
   raw_response = rsolr.select(:q=>'*:*)
-  @response = RSolr::Ext::Response::Standard.new(raw_response)
+  @response = RSolr::Ext.wrap_response(raw_response)
   # in view:
   <%= will_paginate @response.docs %>
+
+==The Findable Module
+
+You can get a modified RSolr.connect object by calling RSolr::Ext.connect.
+
+The object returned is an RSolr::Connection::Adapter (Direct or HTTP) with additional methods attached, most notably #find, which comes from the RSolr::Ext::Findable module.
+
+The #find method provides a convenient way to search solr. Here are some examples:
+  
+  # q=jefferson - returns all docs
+  all_jefferson_docs = find 'jefferson'
+  
+  # q=jefferson&rows=1 -- first doc only
+  a_single_jefferson_doc = find :first, 'jefferson'
+  
+  # q=jefferson&fq=type:"book" - all docs
+  books_about_jefferson = find 'jefferson', :phrase_filters=>{:type=>'book'}
+  
+  # q=something -- the entire response
+  solr_response = find {:q=>'something'}, :include_response=>true

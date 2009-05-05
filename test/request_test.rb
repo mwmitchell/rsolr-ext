@@ -11,7 +11,7 @@ class RSolrExtRequestTest < Test::Unit::TestCase
       :phrases=>{:name=>'This is a phrase'},
       :filters=>['test', {:price=>(1..10)}],
       :phrase_filters=>{:manu=>['Apple']},
-      :q=>'ipod',
+      :queries=>'ipod',
       :facets=>{:fields=>['cat', 'blah']}
     )
     assert_equal ["test", "price:[1 TO 10]", "manu:\"Apple\""], solr_params[:fq]

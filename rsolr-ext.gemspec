@@ -12,6 +12,8 @@ Gem::Specification.new do |s|
     
     "lib/mash.rb",
     
+    "lib/rsolr-ext/findable.rb",
+    
     "lib/rsolr-ext/mapable.rb",
     
     "lib/rsolr-ext/request/queryable.rb",
@@ -28,6 +30,7 @@ Gem::Specification.new do |s|
     "rsolr-ext.gemspec"
 	]
 	s.test_files = [
+	  'test/findable_test.rb',
 	  'test/request_test.rb',
 	  'test/response_test.rb',
 	  'test/test_unit_test_case.rb',

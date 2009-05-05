@@ -16,16 +16,37 @@ unless Hash.respond_to?(:to_mash)
   end
 end
 
+require 'rubygems'
+require 'rsolr'
+
 module RSolr
   
   module Ext
     
-    VERSION = '0.6.1'
+    VERSION = '0.7.0'
     
     autoload :Request, 'rsolr-ext/request.rb'
     autoload :Response, 'rsolr-ext/response.rb'
     autoload :Mapable, 'rsolr-ext/mapable.rb'
-    autoload :Access, 'rsolr-ext/access.rb'
+    autoload :Findable, 'rsolr-ext/findable.rb'
+    
+    # RSolr::Ext.map_params({})
+    def self.map_params(r)
+      RSolr::Ext::Request::Standard.new.map(r)
+    end
+    
+    # RSolr::Ext.wrap_response({})
+    def self.wrap_response(r)
+      RSolr::Ext::Response::Standard.new(r)
+    end
+    
+    # c = RSolr::Ext.connect
+    # c.find(:q=>'*:*').docs.size
+    def self.connect(*args)
+      connection = RSolr.connect(*args)
+      connection.extend RSolr::Ext::Findable
+      connection
+    end
     
   end
   

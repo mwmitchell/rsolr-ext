@@ -10,6 +10,7 @@ module RSolr::Ext::Request
     MAPPED_PARAMS = [
       :per_page,
       :page,
+      :queries, # fielded queries
       :phrases, # quoted q param
       :filters, # fq params
       :phrase_filters, # quoted fq params,
@@ -26,7 +27,11 @@ module RSolr::Ext::Request
       page = page < 1 ? 0 : page
       output[:start] = page * output[:rows]
     end
-
+    
+    def map_queries(value,output)
+      output[:q] = append_to_param(output[:q], build_query(value, false))
+    end
+    
     def map_phrases(value,output)
       output[:q] = append_to_param(output[:q], build_query(value, true))
     end
