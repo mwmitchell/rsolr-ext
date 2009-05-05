@@ -23,7 +23,7 @@ module RSolr
   
   module Ext
     
-    VERSION = '0.7.5'
+    VERSION = '0.7.6'
     
     autoload :Request, 'rsolr-ext/request.rb'
     autoload :Response, 'rsolr-ext/response.rb'

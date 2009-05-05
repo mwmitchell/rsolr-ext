@@ -52,19 +52,12 @@ module RSolr::Ext::Doc
     end
     
     def find(*args)
-      call_finder_method(:find, *args)
+      mode, solr_params, opts = connection.send(:extract_find_opts!, *args)
+      connection.find(*[mode, default_params.merge(solr_params), opts]) { |doc| self.new(doc) }
     end
     
-    def find_by_id(*args)
-      call_finder_method(:find_by_id, *args)
-    end
-    
-    protected
-    
-    def call_finder_method(method_name, *args)
-      mode, params, opts = connection.send(:extract_find_opts!, *args)
-      params.merge!(default_params)
-      connection.send(method_name, *[mode, params, opts]) { |doc| self.new(doc) }
+    def find_by_id(id, solr_params={}, opts={})
+      connection.find_by_id(id, default_params.merge(solr_params), opts) { |doc| self.new(doc) }
     end
     
   end

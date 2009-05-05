@@ -34,6 +34,10 @@ module RSolr::Ext::Findable
   def find(*args, &blk)
     mode, solr_params, opts = extract_find_opts!(*args)
     
+    unless solr_params.respond_to?(:each_pair)
+      solr_params = {:q=>solr_params}
+    end
+    
     opts[:include_response] = false unless opts.key?(:include_response)
     
     solr_params[:rows] = 1 if mode == :first
@@ -64,9 +68,14 @@ module RSolr::Ext::Findable
   end
   
   # find_by_id(10, :handler=>'catalog')
+  # find_by_id(:id=>10)
   def find_by_id(id, solr_params={}, opts={}, &blk)
-    solr_params[:phrases] ||= {}
-    solr_params[:phrases][:id] = id
+    if id.respond_to?(:each_pair)
+      solr_params = id
+    else
+      solr_params[:phrases] ||= {}
+      solr_params[:phrases][:id] = id
+    end
     self.find(:first, solr_params, opts, &blk)
   end
   
@@ -81,10 +90,6 @@ module RSolr::Ext::Findable
     end
     # extract solr params
     solr_params = args.shift || {}
-    # create a hash if a string was passed in...
-    unless solr_params.respond_to?(:each_pair)
-      solr_params = {:q=>solr_params}
-    end
     # extract options
     opts = args.shift || {}
     [mode, solr_params, opts]
