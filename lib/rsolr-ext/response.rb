@@ -24,8 +24,8 @@ module RSolr::Ext::Response
     
     def initialize(*args)
       super(*args)
-      extend Docs if self['response']['docs']
-      extend Facets if key?('facet_counts')
+      extend Docs
+      extend Facets
     end
     
     def response
