@@ -34,10 +34,6 @@ module RSolr::Ext::Findable
   def find(*args, &blk)
     mode, solr_params, opts = extract_find_opts!(*args)
     
-    unless solr_params.respond_to?(:each_pair)
-      solr_params = {:q=>solr_params}
-    end
-    
     opts[:include_response] = false unless opts.key?(:include_response)
     
     solr_params[:rows] = 1 if mode == :first
@@ -74,7 +70,7 @@ module RSolr::Ext::Findable
       solr_params = id
     else
       solr_params[:phrases] ||= {}
-      solr_params[:phrases][:id] = id
+      solr_params[:phrases][:id] = id.to_s
     end
     self.find(:first, solr_params, opts, &blk)
   end
@@ -83,13 +79,15 @@ module RSolr::Ext::Findable
   
   def extract_find_opts!(*args)
     mode = :all
-    # extract the mode (:all or :first)
     valid_modes = [:all, :first]
     if args[0].is_a?(Symbol)
       mode = valid_modes.include?(args[0]) ? args.shift : raise("Invalid find mode; should be :first or :all")
     end
     # extract solr params
-    solr_params = args.shift || {}
+    solr_params = args.shift
+    unless solr_params.respond_to?(:each_pair)
+      solr_params = {:q=>solr_params.to_s}
+    end
     # extract options
     opts = args.shift || {}
     [mode, solr_params, opts]
