@@ -49,11 +49,15 @@ module RSolr::Ext::Doc
     
     def default_params
       @default_params ||= {:qt=>:standard, :rows=>10}
+      # don't allow nil values to pass!
+      @default_params.delete_if {|k,v| v.to_s.empty?}
+      @default_params
     end
     
     def find(*args)
       mode, solr_params, opts = connection.send(:extract_find_opts!, *args)
-      connection.find(*[mode, default_params.merge(solr_params), opts]) { |doc| self.new(doc) }
+      final_params = default_params.merge(solr_params)
+      connection.find(*[mode, final_params, opts]) { |doc| self.new(doc) }
     end
     
     def find_by_id(id, solr_params={}, opts={})
