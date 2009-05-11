@@ -25,10 +25,10 @@ class RSolrExtRequestTest < Test::Unit::TestCase
   test 'fq param using the phrase_filters mapping' do
     std = RSolr::Ext::Request::Standard.new
     solr_params = std.map(
-      :phrase_filters=>[{:manu=>'Apple'}, {:color=>'red'}]
+      :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
     )
-    assert solr_params[:fq].is_a?(Array)
-    assert solr_params[:fq].first.is_a?(String)
+    expected = {:fq=>["color:\"red\"", "color:\"blue\"", "manu:\"Apple\"", "manu:\"ASG\""]}
+    assert expected, solr_params
   end
   
 end

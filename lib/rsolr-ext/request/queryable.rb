@@ -32,6 +32,11 @@ module RSolr::Ext::Request::Queryable
       return value.collect do |(k,v)|
         if v.is_a?(Range)
           "#{k}:#{build_range(v)}"
+        # If the value is an array, we want the same param, multiple times (not a query join)
+        elsif v.is_a?(Array)
+          v.collect do |vv|
+            "#{k}:#{build_query(vv, quote_string)}"
+          end
         else
           "#{k}:#{build_query(v, quote_string)}"
         end
