@@ -48,7 +48,7 @@ module RSolr::Ext::Doc
     end
     
     def default_params
-      @default_params ||= {:qt=>:standard, :rows=>10}
+      @default_params ||= {}
       # don't allow nil values to pass!
       @default_params.delete_if {|k,v| v.to_s.empty?}
       @default_params
