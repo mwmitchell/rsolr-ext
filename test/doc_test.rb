@@ -22,11 +22,6 @@ class RSolrExtDocTest < Test::Unit::TestCase
     assert DocX.respond_to?(:default_params)
   end
   
-  test 'DocX.default_params is a hash, with preset defaults' do
-    defaults = {:qt=>:standard, :rows=>10}
-    assert_equal defaults, DocX.default_params
-  end
-  
   test "DocX default connection" do
     assert_equal RSolr::Connection, DocX.connection.class
   end
