@@ -41,27 +41,19 @@ module RSolr::Ext::Doc
   #
   module Findable
     
-    attr_accessor :default_params, :connection
+    attr_accessor :connection
     
     def connection
       @connection ||= RSolr::Ext.connect
     end
     
-    def default_params
-      @default_params ||= {}
-      # don't allow nil values to pass!
-      @default_params.delete_if {|k,v| v.to_s.empty?}
-      @default_params
-    end
-    
     def find(*args)
       mode, solr_params, opts = connection.send(:extract_find_opts!, *args)
-      final_params = default_params.merge(solr_params)
-      connection.find(*[mode, final_params, opts]) { |doc| self.new(doc) }
+      connection.find(*[mode, solr_params, opts]) { |doc| self.new(doc) }
     end
     
     def find_by_id(id, solr_params={}, opts={})
-      connection.find_by_id(id, default_params.merge(solr_params), opts) { |doc| self.new(doc) }
+      connection.find_by_id(id, solr_params, opts) { |doc| self.new(doc) }
     end
     
   end

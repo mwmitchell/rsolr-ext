@@ -18,10 +18,6 @@ class RSolrExtDocTest < Test::Unit::TestCase
     
   end
   
-  test 'DocX responds to #default_params' do
-    assert DocX.respond_to?(:default_params)
-  end
-  
   test "DocX default connection" do
     assert_equal RSolr::Connection, DocX.connection.class
   end
