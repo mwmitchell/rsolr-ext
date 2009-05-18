@@ -34,7 +34,7 @@ module RSolr::Ext::Findable
   def find(*args, &blk)
     mode, solr_params, opts = extract_find_opts!(*args)
     
-    opts[:include_response] = false unless opts.key?(:include_response)
+    opts[:include_response] ||= true
     
     solr_params[:rows] = 1 if mode == :first
     valid_solr_params = RSolr::Ext.map_params(solr_params)
