@@ -24,7 +24,7 @@ module RSolr::Ext::Response::Spelling
     # Thanks to Naomi Dushay!
     def words
       @words ||= (
-        spellcheck = self[:spellcheck]
+        spellcheck = self.response[:spellcheck]
         if spellcheck && spellcheck[:suggestions]
           suggestions = spellcheck[:suggestions]
           result = Array.new
