@@ -1,6 +1,6 @@
 module RSolr::Ext::Response::Docs
   
-  module Accessable
+  module Accessible
     
     # Helper method to check if value/multi-values exist for a given key.
     # The value can be a string, or a RegExp
@@ -83,7 +83,9 @@ module RSolr::Ext::Response::Docs
   def self.extended(base)
     d = base['response']['docs']
     d.extend Pageable
-    d.each{|item|item.extend Accessable}
+    d.each do |item|
+      item.extend Accessible
+    end
     d.per_page = base['responseHeader']['params']['rows'].to_s.to_i
     d.start = base['response']['start'].to_s.to_i
     d.total = base['response']['numFound'].to_s.to_i

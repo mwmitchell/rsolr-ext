@@ -2,6 +2,7 @@ module RSolr::Ext::Response
   
   autoload :Facets, 'rsolr-ext/response/facets'
   autoload :Docs, 'rsolr-ext/response/docs'
+  autoload :Spelling, 'rsolr-ext/response/spelling'
   
   class Base < Mash
     
@@ -26,10 +27,16 @@ module RSolr::Ext::Response
       super(*args)
       extend Docs
       extend Facets
+      extend Spelling
     end
     
     def response
-      self['response']
+      self[:response]
+    end
+    
+    # short cut to response['numFound']
+    def total
+      response[:numFound]
     end
     
   end

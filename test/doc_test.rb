@@ -31,8 +31,8 @@ class RSolrExtDocTest < Test::Unit::TestCase
   end
   
   test "DocX.books" do
-    DocX.books('b*', :sort=>'title_sort desc').each do |book|
-      puts book.title
+    DocX.books('b*', :sort=>'title_sort desc').docs.each do |book|
+      book.title
     end
   end
   
