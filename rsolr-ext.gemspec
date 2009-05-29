@@ -40,5 +40,7 @@ Gem::Specification.new do |s|
 	  'test/test_unit_test_case.rb',
 	  'test/helper.rb'
 	]
+	
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
+	
 end
