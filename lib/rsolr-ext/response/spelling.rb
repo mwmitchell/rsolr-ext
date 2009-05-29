@@ -24,11 +24,10 @@ module RSolr::Ext::Response::Spelling
     # Thanks to Naomi Dushay!
     def words
       @words ||= (
+        result = []
         spellcheck = self.response[:spellcheck]
-        if spellcheck && spellcheck[:suggestions]
-          suggestions = spellcheck[:suggestions]
-          result = Array.new
-          if (!suggestions.nil?)
+        if spellcheck && (suggestions = spellcheck[:suggestions])
+          unless suggestions.nil?
             # suggestions is an array: 
             #    (query term)
             #    (hash of term info and term suggestion) 
@@ -52,14 +51,11 @@ module RSolr::Ext::Response::Spelling
               #   suggestion =>  { frequency =>, word => }
               origFreq = term_info['origFreq']
               suggFreq = term_info['suggestion']['frequency'] 
-              if suggFreq > origFreq
-                result.push(term_info['suggestion']['word'])
-              end
+              words << term_info['suggestion']['word'] if suggFreq > origFreq
             end
-            result.uniq!
-            result.empty? ? nil : result
           end
         end
+        words.uniq
       )
     end
     
