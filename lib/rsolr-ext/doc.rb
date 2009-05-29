@@ -68,11 +68,15 @@ module RSolr::Ext::Doc
   # The original object passed in to the #new method
   attr :_source_hash
   
+  # The original object passed, converted to a mash
+  attr :_source_mash
+  
   # Constructor **for the class that is getting this module included**
   # source_doc should be a hash or something similar
   # calls each of after_initialize blocks
   def initialize(source_doc={})
     @_source_hash = source_doc
+    @_source_mash = source_doc.to_mash
     self.class.hooks.each do |h|
       instance_eval &h
     end
@@ -80,14 +84,14 @@ module RSolr::Ext::Doc
   
   # for easy access to the solr id (route helpers etc..)
   def id
-    @_source_hash['id']
+    @_source_mash['id']
   end
   
   # the wrapper method to the @_source_hash object.
   # If a method is missing, it gets sent to @_source_hash
   # with all of the original params and block
   def method_missing(m, *args, &b)
-    @_source_hash.send(m, *args, &b)
+    @_source_mash.send(m, *args, &b)
   end
   
 end
