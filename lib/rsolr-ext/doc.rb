@@ -63,6 +63,7 @@ module RSolr::Ext::Doc
   def self.included(base)
     base.extend Callbacks
     base.extend Findable
+    base.send :include, RSolr::Ext::Response::Docs::Accessible
   end
   
   # The original object passed in to the #new method
