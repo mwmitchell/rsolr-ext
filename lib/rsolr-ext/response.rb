@@ -1,10 +1,18 @@
 module RSolr::Ext::Response
   
-  autoload :Facets, 'rsolr-ext/response/facets'
   autoload :Docs, 'rsolr-ext/response/docs'
+  autoload :Facets, 'rsolr-ext/response/facets'
   autoload :Spelling, 'rsolr-ext/response/spelling'
   
   class Base < Mash
+    
+    def initialize *args
+      super *args
+      extend Response if self['response']
+      extend Docs if self['response']['docs']
+      extend Facets if self['facet_counts']
+      extend Spelling if self['spellcheck']
+    end
     
     def header
       self['responseHeader']
@@ -20,15 +28,7 @@ module RSolr::Ext::Response
     
   end
   
-  # 
-  class Standard < Base
-    
-    def initialize(*args)
-      super(*args)
-      extend Docs
-      extend Facets
-      extend Spelling
-    end
+  module Response
     
     def response
       self[:response]
@@ -38,33 +38,6 @@ module RSolr::Ext::Response
     def total
       response[:numFound]
     end
-    
-  end
-  
-  class Dismax < Standard
-    
-  end
-  
-  # 
-  class Luke < Base
-    
-    # Returns an array of fields from the index
-    # An optional rule can be used for "grepping" field names:
-    # field_list(/_facet$/)
-    def field_list(rule=nil)
-      fields.select do |k,v|
-        rule ? k =~ rule : true
-      end.collect{|k,v|k}
-    end
-    
-    def fields
-      self['fields']
-    end
-
-  end# end Luke
-  
-  # Update
-  class Update < Base
     
   end
   

@@ -1,6 +1,5 @@
-# Findable can be mixed into whatever RSolr.connect returns.
 # RSolr::Ext.connect() does this for you.
-# Findable makes querying solr easier by providing a simple #find method.
+# Ext::Connection makes querying solr easier by providing a simple #find method.
 #
 # The #find method behaves differently depending on what you send in.
 #
@@ -24,32 +23,26 @@
 # The following opts are allowed:
 # :include_response - false is default - whether or not to return the whole solr response or just the doc(s)
 # :handler  - nil is default - the request path (/select or /search etc.)
-module RSolr::Ext::Findable
+module RSolr::Ext::Connection
   
   # Examples:
   # find 'jefferson' # q=jefferson - all docs
   # find :first, 'jefferson' # q=jefferson&rows=1 - first doc only
   # find 'jefferson', :phrase_filters=>{:type=>'book'} # q=jefferson&fq=type:"book" - all docs
   # find {:q=>'something'}, :include_response=>true # q=something -- the entire response
-  def find(*args, &blk)
+  def find *args, &blk
     mode, solr_params, opts = extract_find_opts!(*args)
     
     opts[:include_response] ||= true
     
     solr_params[:rows] = 1 if mode == :first
-    valid_solr_params = RSolr::Ext.map_params(solr_params)
+    valid_solr_params = RSolr::Ext::Request.map(solr_params)
     
     response = opts[:handler] ? send_request(opts[:handler], valid_solr_params) : select(valid_solr_params)
     return response if response.is_a?(String)
     
-    response = RSolr::Ext::wrap_response(response)
+    response = RSolr::Ext::Response::Base.new(response)
     
-    if block_given? and response['response']['docs']
-      # yield each doc if a block is given
-      response['response']['docs'].each_with_index do |doc,i|
-        response['response']['docs'][i] = yield(doc)
-      end
-    end
     if opts[:include_response] == true
       response
     else
@@ -85,6 +78,8 @@ module RSolr::Ext::Findable
     end
     # extract solr params
     solr_params = args.shift
+    # if solr_params is NOT a hash like object
+    # force it into a string for the :q param
     unless solr_params.respond_to?(:each_pair)
       solr_params = {:q=>solr_params.to_s}
     end

@@ -13,7 +13,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   
   test 'standard response class' do
     raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Standard.new(raw_response)
+    r = RSolr::Ext::Response::Base.new(raw_response)
     assert r.respond_to?(:response)
     assert r.ok?
     assert_equal 11, r.docs.size
@@ -27,7 +27,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   
   test 'standard response doc ext methods' do
     raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Standard.new(raw_response)
+    r = RSolr::Ext::Response::Base.new(raw_response)
     doc = r.docs.first
     assert doc.has?(:cat, /^elec/)
     assert ! doc.has?(:cat, 'elec')
@@ -40,7 +40,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   
   test 'Response::Standard facets' do
     raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Standard.new(raw_response)
+    r = RSolr::Ext::Response::Base.new(raw_response)
     assert_equal 2, r.facets.size
     
     field_names = r.facets.collect{|facet|facet.name}
@@ -68,7 +68,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   
   test 'response::standard facet_by_field_name' do
     raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Standard.new(raw_response)
+    r = RSolr::Ext::Response::Base.new(raw_response)
     facet = r.facet_by_field_name('cat')
     assert_equal 'cat', facet.name
   end

@@ -1,5 +1,1 @@
-move RSolr::Ext::Response::Docs::Accessible to Doc
-
-have RSolr::Ext::Response::Docs.extended use Doc::Accessible instead
-
 cleanup RSolr::Ext::Findable

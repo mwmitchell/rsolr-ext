@@ -1,23 +1,13 @@
 module RSolr::Ext::Response::Facets
   
   # represents a facet value; which is a field value and its hit count
-  class FacetItem
-    attr_reader :value,:hits
-    def initialize(value,hits)
-      @value,@hits=value,hits
-    end
-  end
+  FacetItem = Struct.new :value,:hits
   
   # represents a facet; which is a field and its values
-  class FacetField
-    attr_reader :name
-    attr_accessor :items
-    def initialize(name)
-      @name=name
-      @items=[]
-    end
+  FacetField = Struct.new :name, :items do
+    def items; @items ||= [] end
   end
-
+  
   # @response.facets.each do |facet|
   #   facet.field
   # end

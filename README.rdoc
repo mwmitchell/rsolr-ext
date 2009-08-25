@@ -14,12 +14,12 @@ A set of helper methods/modules to assist in building Solr queries and handling 
   
   rsolr = RSolr::Ext.connect
   
-  response = rsolr.select(solr_params)
+  response = rsolr.find(solr_params)
 
 ==Response Example
   rsolr = RSolr::Ext.connect
   
-  response = rsolr.select(:q=>'*:*)
+  response = rsolr.find :q=>'*:*'
   
   response.ok?
   response.params
@@ -35,10 +35,10 @@ If you wanna paginate, just throw the collection into the WillPaginate view help
   <%= will_paginate response.docs %>
 
 ===The Doc Module
-You can create your own "models" using RSolr::Ext::Doc
+You can create your own "models" using RSolr::Ext::Model
 
   class Book
-    include RSolr::Ext::Doc
+    include RSolr::Ext::Model
     def self.find_by_author(author)
         find(:fq=>'object_type:"book"', :rows=>10, :phrase_filters=>{:author=>author})
     end

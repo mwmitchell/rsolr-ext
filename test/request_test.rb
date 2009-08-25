@@ -1,18 +1,26 @@
 require 'test_unit_test_case'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
 
+class Symbol
+  
+  def method_missing n,&b
+    [self, n].join('.').to_sym
+  end
+  
+end
+
 class RSolrExtRequestTest < Test::Unit::TestCase
   
   test 'standard request' do
-    std = RSolr::Ext::Request::Standard.new
-    solr_params = std.map(
+    solr_params = RSolr::Ext::Request.map(
       :page=>2,
       :per_page=>10,
       :phrases=>{:name=>'This is a phrase'},
       :filters=>['test', {:price=>(1..10)}],
       :phrase_filters=>{:manu=>['Apple']},
       :queries=>'ipod',
-      :facets=>{:fields=>['cat', 'blah']}
+      :facets=>{:fields=>['cat', 'blah']},
+      :spellcheck => true
     )
     assert_equal ["test", "price:[1 TO 10]", "manu:\"Apple\""], solr_params[:fq]
     assert_equal 10, solr_params[:start]
@@ -23,8 +31,7 @@ class RSolrExtRequestTest < Test::Unit::TestCase
   end
   
   test 'fq param using the phrase_filters mapping' do
-    std = RSolr::Ext::Request::Standard.new
-    solr_params = std.map(
+    solr_params = RSolr::Ext::Request.map(
       :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
     )
     expected = {:fq=>["color:\"red\"", "color:\"blue\"", "manu:\"Apple\"", "manu:\"ASG\""]}

@@ -1,64 +1,101 @@
 module RSolr::Ext::Request
   
-  autoload :Queryable, 'rsolr-ext/request/queryable.rb'
+  module Params
+    
+    def map input
+      output = {}
+      if input[:per_page]
+        output[:rows] = input.delete :per_page
+      end
+      
+      if page = input.delete(:page)
+        raise ':per_page must be set when using :page' unless output[:rows]
+        page = page.to_s.to_i-1
+        page = page < 1 ? 0 : page
+        output[:start] = page * output[:rows]
+      end
+      
+      if queries = input.delete(:queries)
+        output[:q] = append_to_param output[:q], build_query(queries, false)
+      end
+      if phrases = input.delete(:phrases)
+        output[:q] = append_to_param output[:q], build_query(phrases, true)
+      end
+      if filters = input.delete(:filters)
+        output[:fq] = append_to_param output[:fq], build_query(filters), false
+      end
+      if pfilters = input.delete(:phrase_filters)
+        output[:fq] = append_to_param output[:fq], build_query(pfilters, true), false
+      end
+      if facets = input.delete(:facets)
+        output[:facet] = true
+        output['facet.field'] = append_to_param output['facet.field'], build_query(facets.values), false
+      end
+      output.merge input
+    end
+    
+  end
   
-  class Standard
+  module QueryHelpers
     
-    include RSolr::Ext::Mapable
-    include RSolr::Ext::Request::Queryable
-    
-    MAPPED_PARAMS = [
-      :per_page,
-      :page,
-      :queries, # fielded queries
-      :phrases, # quoted q param
-      :filters, # fq params
-      :phrase_filters, # quoted fq params,
-      :facets
-    ]
-    
-    def map_per_page(value,output)
-      output[:rows] = value.to_i
-    end
-    
-    def map_page(value,output)
-      raise ':per_page must be set when using :page' unless output[:rows]
-      page = value.to_s.to_i-1
-      page = page < 1 ? 0 : page
-      output[:start] = page * output[:rows]
-    end
-    
-    def map_queries(value,output)
-      output[:q] = append_to_param(output[:q], build_query(value, false))
-    end
-    
-    def map_phrases(value,output)
-      output[:q] = append_to_param(output[:q], build_query(value, true))
+    # Wraps a string around double quotes
+    def quote(value)
+      %("#{value}")
     end
 
-    def map_filters(value,output)
-      output[:fq] = append_to_param(output[:fq], build_query(value), false)
+    # builds a solr range query from a Range object
+    def build_range(r)
+      "[#{r.min} TO #{r.max}]"
     end
 
-    def map_phrase_filters(value,output)
-      output[:fq] = append_to_param(output[:fq], build_query(value, true), false)
-    end
-    
-    def map_facets(value,output)
-      output[:facet] = true
-      if value[:fields]
-        fields = value[:fields].is_a?(Array) ? value[:fields] : [value[:fields]]
-        fields.each do |f|
-          output['facet.field'] ||= []
-          output['facet.field'] << f
-        end
+    # builds a solr query fragment
+    # if "quote_string" is true, the values will be quoted.
+    # if "value" is a string/symbol, the #to_s method is called
+    # if the "value" is an array, each item in the array is 
+    # send to build_query (recursive)
+    # if the "value" is a Hash, a fielded query is built
+    # where the keys are used as the field names and
+    # the values are either processed as a Range or
+    # passed back into build_query (recursive)
+    def build_query(value, quote_string=false)
+      case value
+      when String,Symbol
+        quote_string ? quote(value.to_s) : value.to_s
+      when Array
+        value.collect do |v|
+          build_query(v, quote_string)
+        end.flatten
+      when Hash
+        return value.collect do |(k,v)|
+          if v.is_a?(Range)
+            "#{k}:#{build_range(v)}"
+          # If the value is an array, we want the same param, multiple times (not a query join)
+          elsif v.is_a?(Array)
+            v.collect do |vv|
+              "#{k}:#{build_query(vv, quote_string)}"
+            end
+          else
+            "#{k}:#{build_query(v, quote_string)}"
+          end
+        end.flatten
       end
     end
+
+    # creates an array where the "existing_value" param is first
+    # and the "new_value" is the last.
+    # All empty/nil items are removed.
+    # the return result is either the result of the
+    # array being joined on a space, or the array itself.
+    # "auto_join" should be true or false.
+    def append_to_param(existing_value, new_value, auto_join=true)
+      values = [existing_value, new_value]
+      values.delete_if{|v|v.nil?}
+      auto_join ? values.join(' ') : values.flatten
+    end
     
   end
   
-  class Dismax < Standard
-    
-  end
+  extend QueryHelpers
+  extend Params
   
 end
