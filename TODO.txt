@@ -1,1 +1,2 @@
 cleanup RSolr::Ext::Findable
+tests/specs -- come on dude
