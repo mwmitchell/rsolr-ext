@@ -12,7 +12,7 @@ module RSolr::Ext::Model
 
   # Class level methods for altering object instances
   module Callbacks
-  
+    
     # method that only accepts a block
     # The block is executed when an object is created via #new -> SolrDoc.new
     # The blocks scope is the instance of the object.
@@ -41,12 +41,12 @@ module RSolr::Ext::Model
   #
   module Findable
   
-    attr_accessor :connection
-  
+    attr_accessor :connection, :default_params
+    
     def connection
       @connection ||= RSolr::Ext.connect
     end
-  
+    
     # this method decorates the connection find method
     # and then creates new instance of the class that uses this module.
     def find(*args)

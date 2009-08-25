@@ -4,25 +4,20 @@ require 'helper'
 
 class RSolrExtModelTest < Test::Unit::TestCase
   
-  class Book
+  class Metaphor
     
     include RSolr::Ext::Model
     
-    def self.find_by_author(author, params={})
-      p = {:queries=>author, :qf=>:author_name, :qt=>:search}.merge(params)
-      find p
-    end
-    
-    def view
-      'blah'
+    def author
+      self[:author_name]
     end
     
   end
   
   test "" do
-    result = Book.find_by_author 'Jeffreys'
+    result = Metaphor.find :qt=>:search
     result.docs.each do |d|
-      puts d.view
+      puts d.author
     end
   end
   
