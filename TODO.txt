@@ -1,2 +1,16 @@
 cleanup RSolr::Ext::Findable
 tests/specs -- come on dude
+
+Connection #find method needs serious love
+	remove :include_response option -- doing response.docs is easier anyway?!
+
+default_params for Model?
+
+How about:
+	select({
+		:phrase_filters=>[
+			{:title=>['something', :or, 'something else']},
+			['blah', :or, 'blah blah']
+		],
+		:filters => {:something=>['this', :or, 'that'}
+	})

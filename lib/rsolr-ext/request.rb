@@ -24,8 +24,8 @@ module RSolr::Ext::Request
       if filters = input.delete(:filters)
         output[:fq] = append_to_param output[:fq], build_query(filters), false
       end
-      if pfilters = input.delete(:phrase_filters)
-        output[:fq] = append_to_param output[:fq], build_query(pfilters, true), false
+      if phrase_filters = input.delete(:phrase_filters)
+        output[:fq] = append_to_param output[:fq], build_query(phrase_filters, true), false
       end
       if facets = input.delete(:facets)
         output[:facet] = true

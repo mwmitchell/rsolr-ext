@@ -1,14 +1,6 @@
 require 'test_unit_test_case'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
 
-class Symbol
-  
-  def method_missing n,&b
-    [self, n].join('.').to_sym
-  end
-  
-end
-
 class RSolrExtRequestTest < Test::Unit::TestCase
   
   test 'standard request' do
