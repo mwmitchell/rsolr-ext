@@ -1,7 +1,64 @@
 =RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries and handling responses when using the RSolr library.
 
-==Request Example
+==Requests
+To use the RSolr::Ext connection instead of the normal RSolr connection:
+  solr = RSolr::Ext.connect
+
+RSolr::Ext adds a #find and a #luke_admin method to the connection object.
+
+The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
+  solr.luke['index']
+  solr.luke['fields']
+  solr.luke['info']
+
+The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
+
+===:page
+This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
+
+===:per_page
+This maps to the Solr "rows" param. How many "pages" in the result.
+
+===:queries
+This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
+====Examples
+* :queries => 'normal' BECOMES ?q=normal
+* :queries => ['one', 'two'] BECOMES ?q=one two
+* :queries => {:title=>'one'} BECOMES ?q=title:(one)
+* :queries => ['red', {:title=>'one'}] BECOMES ?q=red title:(one)
+
+===:phrases
+This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
+====Examples
+* :phrases => 'normal' BECOMES ?q="normal"
+* :phrases => ['one', 'two'] BECOMES ?q="one" "two"
+* :phrases => {:title=>'one'} BECOMES ?q=title:("one")
+* :phrases => ['red', {:title=>'one'}] BECOMES ?q="red" title:("one")
+
+===:filters
+The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
+====Examples
+* :filters => 'normal' BECOMES ?fq=normal
+* :filters => ['one', 'two'] BECOMES ?fq=one two
+* :filters => {:title=>'one'} BECOMES ?fq=title:(one)
+* :filters => ['red', {:title=>'one'}] BECOMES ?fq=red title:(one)
+
+===:phrase_filters
+The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
+====Examples
+* :phrase_filters => 'normal' BECOMES ?fq="normal"
+* :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
+* :phrase_filters => {:title=>'one'} BECOMES ?fq=title:("one")
+* :phrase_filters => ['red', {:title=>'one'}] BECOMES ?fq="red" title:("one")
+
+===:facets
+The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
+====Examples
+* :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
+
+===Request Example
+  solr = RSolr::Ext.connect
   solr_params = {
     :page=>2,
     :per_page=>10,
@@ -12,31 +69,37 @@ A set of helper methods/modules to assist in building Solr queries and handling 
     :facets=>{:fields=>['cat', 'blah']}
   }
   
-  rsolr = RSolr::Ext.connect
-  
   response = rsolr.find(solr_params)
 
-==Response Example
-  rsolr = RSolr::Ext.connect
+==Responses
+RSolr::Ext decorates the normal output hash from RSolr and adds some helpful methods.
+
+===Examples
+  solr = RSolr::Ext.connect
   
-  response = rsolr.find :q=>'*:*'
+  response = solr.find :q=>'*:*'
   
   response.ok?
   response.params
   response.docs
   response.docs.previous_page
   response.docs.next_page
-  response.facets
+  response.facets.each do |facet|
+    puts facet.name
+    facet.items.each do |item|
+      puts "#{facet.name}::#{item.value} (#{item.hits})"
+    end
+  end
 
 You can access values in the response hash using symbols or strings.
 
-===Doc Pagination
+===Documents/Pagination
 If you wanna paginate, just throw the collection into the WillPaginate view helper.
   <%= will_paginate response.docs %>
 
-===The "Model" Module
+==The "Model" Module
 You can create your own <read-only> "models" using RSolr::Ext::Model
-
+  
   class Book
     include RSolr::Ext::Model
     def self.find_by_author(author)

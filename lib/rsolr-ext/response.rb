@@ -6,8 +6,11 @@ module RSolr::Ext::Response
   
   class Base < Mash
     
-    def initialize *args
-      super *args
+    attr :original_hash
+    
+    def initialize hash
+      super hash
+      @original_hash = hash
       extend Response if self['response']
       extend Docs if self['response'] and self['response']['docs']
       extend Facets if self['facet_counts']
@@ -24,6 +27,10 @@ module RSolr::Ext::Response
     
     def ok?
       header['status'] == 0
+    end
+    
+    def method_missing *args, &blk
+      self.original_hash.send *args, &blk
     end
     
   end

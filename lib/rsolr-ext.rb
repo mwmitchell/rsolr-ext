@@ -15,13 +15,13 @@ unless Hash.respond_to?(:to_mash)
 end
 
 require 'rubygems'
-require 'rsolr'
+require '../../rsolr/lib/rsolr.rb'
 
 module RSolr
   
   module Ext
     
-    VERSION = '0.8.0'
+    VERSION = '0.9.5'
     
     autoload :Connection, 'rsolr-ext/connection.rb'
     autoload :Doc, 'rsolr-ext/doc.rb'

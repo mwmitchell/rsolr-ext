@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.name = "rsolr-ext"
-	s.version = "0.8.0"
-	s.date = "2009-07-31"
+	s.version = "0.9.5"
+	s.date = "2009-09-04"
 	s.summary = "An extension lib for RSolr"
 	s.email = "goodieboy@gmail.com"
 	s.homepage = "http://github.com/mwmitchell/rsolr_ext"
