@@ -32,7 +32,7 @@ This key maps to the Solr "q" param. Accepts a string, array or hash. When an ar
 * :queries => ['one', 'two'] BECOMES ?q=one two
 * :queries => {:title=>'one'} BECOMES ?q=title:(one)
 * :queries => ['red', {:title=>'one'}] BECOMES ?q=red title:(one)
-
+ 
 
 ====:phrases
 This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
@@ -41,7 +41,7 @@ This value is mapped to the Solr "q" param. When this key is used, the value wil
 * :phrases => ['one', 'two'] BECOMES ?q="one" "two"
 * :phrases => {:title=>'one'} BECOMES ?q=title:("one")
 * :phrases => ['red', {:title=>'one'}] BECOMES ?q="red" title:("one")
-
+ 
 
 ====:filters
 The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
@@ -50,7 +50,7 @@ The :filters key maps to the Solr :fq param. This has the same behavior as the :
 * :filters => ['one', 'two'] BECOMES ?fq=one two
 * :filters => {:title=>'one'} BECOMES ?fq=title:(one)
 * :filters => ['red', {:title=>'one'}] BECOMES ?fq=red title:(one)
-
+ 
 
 ====:phrase_filters
 The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
@@ -59,13 +59,13 @@ The :phrase_filters key maps to the Solr :fq param. This has the same behavior a
 * :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
 * :phrase_filters => {:title=>'one'} BECOMES ?fq=title:("one")
 * :phrase_filters => ['red', {:title=>'one'}] BECOMES ?fq="red" title:("one")
-
+ 
 
 ====:facets
 The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
 
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
-
+ 
 
 ====Request Example
   solr = RSolr::Ext.connect
