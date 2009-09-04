@@ -24,7 +24,7 @@ This maps to the Solr "rows" param. How many "pages" in the result.
 
 ====:queries
 This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
-=====Examples
+====Examples
 * :queries => 'normal' BECOMES ?q=normal
 * :queries => ['one', 'two'] BECOMES ?q=one two
 * :queries => {:title=>'one'} BECOMES ?q=title:(one)
@@ -33,7 +33,7 @@ This key maps to the Solr "q" param. Accepts a string, array or hash. When an ar
 
 ====:phrases
 This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
-=====Examples
+====Examples
 * :phrases => 'normal' BECOMES ?q="normal"
 * :phrases => ['one', 'two'] BECOMES ?q="one" "two"
 * :phrases => {:title=>'one'} BECOMES ?q=title:("one")
@@ -42,7 +42,7 @@ This value is mapped to the Solr "q" param. When this key is used, the value wil
 
 ====:filters
 The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
-=====Examples
+====Examples
 * :filters => 'normal' BECOMES ?fq=normal
 * :filters => ['one', 'two'] BECOMES ?fq=one two
 * :filters => {:title=>'one'} BECOMES ?fq=title:(one)
@@ -50,7 +50,7 @@ The :filters key maps to the Solr :fq param. This has the same behavior as the :
 
 ====:phrase_filters
 The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
-=====Examples
+====Examples
 * :phrase_filters => 'normal' BECOMES ?fq="normal"
 * :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
 * :phrase_filters => {:title=>'one'} BECOMES ?fq=title:("one")
@@ -59,7 +59,7 @@ The :phrase_filters key maps to the Solr :fq param. This has the same behavior a
 
 ====:facets
 The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
-=====Examples
+====Examples
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
 
 
