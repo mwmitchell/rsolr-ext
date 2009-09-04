@@ -1,6 +1,9 @@
 =RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries and handling responses when using the RSolr library.
 
+==Related Resources & Projects
+* {RSolr}[http://github.com/mwmitchell/rsolr]
+
 ==Requests
 To use the RSolr::Ext connection instead of the normal RSolr connection:
   solr = RSolr::Ext.connect
