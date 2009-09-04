@@ -15,7 +15,7 @@ unless Hash.respond_to?(:to_mash)
 end
 
 require 'rubygems'
-require '../../rsolr/lib/rsolr.rb'
+require 'rsolr'
 
 module RSolr
   

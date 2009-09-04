@@ -42,4 +42,6 @@ Gem::Specification.new do |s|
 	
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
 	
+	s.add_dependency("mwmitchell-rsolr", [">= 0.9.5"])
+	
 end
