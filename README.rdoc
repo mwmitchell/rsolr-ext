@@ -63,7 +63,7 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 
 
 
-====Request Example
+===Request Example
   solr = RSolr::Ext.connect
   solr_params = {
     :page=>2,
