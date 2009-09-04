@@ -9,9 +9,10 @@ RSolr::Ext adds a #find and a #luke_admin method to the connection object.
 
 ===#luke
 The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
-  solr.luke['index']
-  solr.luke['fields']
-  solr.luke['info']
+  luke_response = solr.luke
+  luke_response['index']
+  luke_response['fields']
+  luke_response['info']
 
 ===#find
 The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
