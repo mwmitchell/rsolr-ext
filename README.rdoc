@@ -63,7 +63,7 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 
 
 
-===Request Example
+==Request Example
   solr = RSolr::Ext.connect
   solr_params = {
     :page=>2,
@@ -72,10 +72,10 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
     :filters=>['test', {:price=>(1..10)}],
     :phrase_filters=>{:manu=>['Apple']},
     :queries=>'ipod',
-    :facets=>{:fields=>['cat', 'blah']}
+    :facets=>{:fields=>['cat', 'blah']},
+    :echoParams => 'EXPLICIT'
   }
-  
-  response = rsolr.find(solr_params)
+  response = rsolr.find solr_params
 
 ==Responses
 RSolr::Ext decorates the normal output hash from RSolr and adds some helpful methods.
