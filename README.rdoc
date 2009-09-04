@@ -16,6 +16,7 @@ The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
 ===#find
 The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
 
+
 ====:page
 This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
 
@@ -27,8 +28,6 @@ This maps to the Solr "rows" param. How many "pages" in the result.
 ====:queries
 This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
 
-EXAMPLES:
-
 * :queries => 'normal' BECOMES ?q=normal
 * :queries => ['one', 'two'] BECOMES ?q=one two
 * :queries => {:title=>'one'} BECOMES ?q=title:(one)
@@ -37,8 +36,6 @@ EXAMPLES:
 
 ====:phrases
 This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
-
-EXAMPLES:
 
 * :phrases => 'normal' BECOMES ?q="normal"
 * :phrases => ['one', 'two'] BECOMES ?q="one" "two"
@@ -49,8 +46,6 @@ EXAMPLES:
 ====:filters
 The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
 
-EXAMPLES:
-
 * :filters => 'normal' BECOMES ?fq=normal
 * :filters => ['one', 'two'] BECOMES ?fq=one two
 * :filters => {:title=>'one'} BECOMES ?fq=title:(one)
@@ -60,8 +55,6 @@ EXAMPLES:
 ====:phrase_filters
 The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
 
-EXAMPLES:
-
 * :phrase_filters => 'normal' BECOMES ?fq="normal"
 * :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
 * :phrase_filters => {:title=>'one'} BECOMES ?fq=title:("one")
@@ -70,8 +63,6 @@ EXAMPLES:
 
 ====:facets
 The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
-
-EXAMPLES:
 
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
 
@@ -92,9 +83,7 @@ EXAMPLES:
 
 ==Responses
 RSolr::Ext decorates the normal output hash from RSolr and adds some helpful methods.
-
-EXAMPLES:
-
+  
   solr = RSolr::Ext.connect
   
   response = solr.find :q=>'*:*'
