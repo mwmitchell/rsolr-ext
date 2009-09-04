@@ -9,25 +9,16 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.authors = ["Matt Mitchell"]
   s.files = [
-  
     "lib/mash.rb",
-  
     "lib/rsolr-ext/connection.rb",
-  
     "lib/rsolr-ext/doc.rb",
-  
     "lib/rsolr-ext/model.rb",
-  
     "lib/rsolr-ext/request.rb",
-  
     "lib/rsolr-ext/response/docs.rb",
     "lib/rsolr-ext/response/facets.rb",
     "lib/rsolr-ext/response/spelling.rb",
-  
     "lib/rsolr-ext/response.rb",
-  
     "lib/rsolr-ext.rb",
-  
     "LICENSE",
     "README.rdoc",
     "rsolr-ext.gemspec"
