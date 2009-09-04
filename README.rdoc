@@ -14,30 +14,31 @@ The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
   luke_response['fields']
   luke_response['info']
 
+
 ===#find
 The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
 
 
-*:page* - This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
+:page - This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
 
 
-*:per_page* - This maps to the Solr "rows" param. How many "pages" in the result.
+:per_page - This maps to the Solr "rows" param. How many "pages" in the result.
 
-*:queries* - This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
+:queries - This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
 
 * :queries => 'normal' BECOMES ?q=normal
 * :queries => ['one', 'two'] BECOMES ?q=one two
 * :queries => {:title=>'one'} BECOMES ?q=title:(one)
 * :queries => ['red', {:title=>'one'}] BECOMES ?q=red title:(one)
 
-*:phrases* - This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
+:phrases - This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
 
 * :phrases => 'normal' BECOMES ?q="normal"
 * :phrases => ['one', 'two'] BECOMES ?q="one" "two"
 * :phrases => {:title=>'one'} BECOMES ?q=title:("one")
 * :phrases => ['red', {:title=>'one'}] BECOMES ?q="red" title:("one") 
 
-*:filters* - The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
+:filters - The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
 
 * :filters => 'normal' BECOMES ?fq=normal
 * :filters => ['one', 'two'] BECOMES ?fq=one two
@@ -45,7 +46,7 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 * :filters => ['red', {:title=>'one'}] BECOMES ?fq=red title:(one)
  
 
-*:phrase_filters* - The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
+:phrase_filters - The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
 
 * :phrase_filters => 'normal' BECOMES ?fq="normal"
 * :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
@@ -53,7 +54,7 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 * :phrase_filters => ['red', {:title=>'one'}] BECOMES ?fq="red" title:("one")
  
 
-*:facets* - The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
+:facets - The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
 
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
  
@@ -71,7 +72,6 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
   }
   
   response = rsolr.find(solr_params)
-
 
 ==Responses
 RSolr::Ext decorates the normal output hash from RSolr and adds some helpful methods.
