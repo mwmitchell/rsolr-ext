@@ -7,57 +7,59 @@ To use the RSolr::Ext connection instead of the normal RSolr connection:
 
 RSolr::Ext adds a #find and a #luke_admin method to the connection object.
 
+===#luke
 The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
   solr.luke['index']
   solr.luke['fields']
   solr.luke['info']
 
+===#find
 The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
 
-===:page
+====:page
 This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
 
-===:per_page
+====:per_page
 This maps to the Solr "rows" param. How many "pages" in the result.
 
-===:queries
+====:queries
 This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
-====Examples
+=====Examples
 * :queries => 'normal' BECOMES ?q=normal
 * :queries => ['one', 'two'] BECOMES ?q=one two
 * :queries => {:title=>'one'} BECOMES ?q=title:(one)
 * :queries => ['red', {:title=>'one'}] BECOMES ?q=red title:(one)
 
-===:phrases
+====:phrases
 This value is mapped to the Solr "q" param. When this key is used, the value will become double-quoted, creating a Solr "phrase" based query.
-====Examples
+=====Examples
 * :phrases => 'normal' BECOMES ?q="normal"
 * :phrases => ['one', 'two'] BECOMES ?q="one" "two"
 * :phrases => {:title=>'one'} BECOMES ?q=title:("one")
 * :phrases => ['red', {:title=>'one'}] BECOMES ?q="red" title:("one")
 
-===:filters
+====:filters
 The :filters key maps to the Solr :fq param. This has the same behavior as the :queries key, except it's for the :fq param.
-====Examples
+=====Examples
 * :filters => 'normal' BECOMES ?fq=normal
 * :filters => ['one', 'two'] BECOMES ?fq=one two
 * :filters => {:title=>'one'} BECOMES ?fq=title:(one)
 * :filters => ['red', {:title=>'one'}] BECOMES ?fq=red title:(one)
 
-===:phrase_filters
+====:phrase_filters
 The :phrase_filters key maps to the Solr :fq param. This has the same behavior as the :phrases key, except it's for the :fq param.
-====Examples
+=====Examples
 * :phrase_filters => 'normal' BECOMES ?fq="normal"
 * :phrase_filters => ['one', 'two'] BECOMES ?fq="one" "two"
 * :phrase_filters => {:title=>'one'} BECOMES ?fq=title:("one")
 * :phrase_filters => ['red', {:title=>'one'}] BECOMES ?fq="red" title:("one")
 
-===:facets
+====:facets
 The :facets does a few different things. First, it sets the Solr param facet=true. It accepts a hash with a single key called :fields. This should be an array of field names to facet on.
-====Examples
+=====Examples
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
 
-===Request Example
+====Request Example
   solr = RSolr::Ext.connect
   solr_params = {
     :page=>2,
