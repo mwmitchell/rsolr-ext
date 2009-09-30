@@ -14,10 +14,11 @@ class RSolrExtModelTest < Test::Unit::TestCase
     
   end
   
-  test "" do
+  test "the id and author methods" do
     result = Metaphor.find :qt=>:search
     result.docs.each do |d|
-      puts d.author
+      assert_equal d.id, d[:id]
+      assert_equal d[:author_name], d.author
     end
   end
   

@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "rsolr-ext"
-  s.version = "0.9.6"
-  s.date = "2009-09-12"
+  s.version = "0.9.6.1"
+  s.date = "2009-09-30"
   s.summary = "An extension lib for RSolr"
   s.email = "goodieboy@gmail.com"
   s.homepage = "http://github.com/mwmitchell/rsolr_ext"
@@ -33,6 +33,6 @@ Gem::Specification.new do |s|
 	
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
 	
-	s.add_dependency("mwmitchell-rsolr", [">= 0.9.5"])
+	s.add_dependency("mwmitchell-rsolr", [">= 0.9.6"])
 	
 end

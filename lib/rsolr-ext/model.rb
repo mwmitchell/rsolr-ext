@@ -67,14 +67,15 @@ module RSolr::Ext::Model
     end
   
   end
-
+  
   # Called by Ruby Module API
   # extends this *class* object
   def self.included(base)
     base.extend Callbacks
     base.extend Findable
+    base.send :include, RSolr::Ext::Doc
   end
-
+  
   # The original object passed in to the #new method
   attr :_source
   

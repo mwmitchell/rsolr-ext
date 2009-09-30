@@ -26,6 +26,7 @@ class RSolrExtConnectionTest < Test::Unit::TestCase
     response = connection.find :q=>'*:*'
     assert response.respond_to?(:ok?)
     assert response.ok?
+    assert_equal response.docs[0][:id], response.docs[0].id
   end
   
   test 'the #luke method' do
