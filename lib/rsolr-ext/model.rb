@@ -83,7 +83,7 @@ module RSolr::Ext::Model
   # source_doc should be a hash or something similar
   # calls each of after_initialize blocks
   def initialize(source_doc={})
-    @_source = source_doc
+    @_source = source_doc.to_mash
     self.class.hooks.each do |h|
       instance_eval &h
     end
