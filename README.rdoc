@@ -1,6 +1,10 @@
 =RSolr::Ext
 A set of helper methods/modules to assist in building Solr queries and handling responses when using the RSolr library.
 
+== Installation:
+  gem sources -a http://gemcutter.org
+  sudo gem install rsolr-ext
+
 ==Related Resources & Projects
 * {RSolr}[http://github.com/mwmitchell/rsolr]
 

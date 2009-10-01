@@ -1,4 +1,8 @@
-Gem::Specification.new do |s|
+require 'rubygems'
+
+require 'rake/gempackagetask'
+
+spec = Gem::Specification.new do |s|
   s.name = "rsolr-ext"
   s.version = "0.9.6.3"
   s.date = "2009-09-30"
@@ -36,4 +40,10 @@ Gem::Specification.new do |s|
 	
 	s.add_dependency("mwmitchell-rsolr", [">= 0.9.6"])
 	
+end
+
+task :default => [:package]
+
+Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_tar = true
 end
