@@ -5,10 +5,10 @@ module RSolr::Ext::Request
     def map input
       output = {}
       if input[:per_page]
-        output[:rows] = input.delete :per_page
+        output[:rows] = input.delete(:per_page).to_i
       end
       
-      if page = input.delete(:page)
+      if page = input.delete(:page).to_i
         raise ':per_page must be set when using :page' unless output[:rows]
         page = page.to_s.to_i-1
         page = page < 1 ? 0 : page
