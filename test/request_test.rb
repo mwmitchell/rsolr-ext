@@ -5,8 +5,8 @@ class RSolrExtRequestTest < Test::Unit::TestCase
   
   test 'standard request' do
     solr_params = RSolr::Ext::Request.map(
-      :page=>2,
-      :per_page=>10,
+      :page=>'2',
+      :per_page=>'10',
       :phrases=>{:name=>'This is a phrase'},
       :filters=>['test', {:price=>(1..10)}],
       :phrase_filters=>{:manu=>['Apple']},

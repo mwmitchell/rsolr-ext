@@ -4,7 +4,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = "rsolr-ext"
-  s.version = "0.9.6.3"
+  s.version = "0.9.6.4"
   s.date = "2009-09-30"
   
   s.summary = "An extension lib for RSolr"
@@ -38,7 +38,7 @@ spec = Gem::Specification.new do |s|
 	
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
 	
-	s.add_dependency("mwmitchell-rsolr", [">= 0.9.6"])
+	s.add_dependency("rsolr", [">= 0.9.6"])
 	
 end
 
