@@ -9,17 +9,16 @@ module RSolr::Ext::Response::Facets
   end
   
   # @response.facets.each do |facet|
-  #   facet.field
+  #   facet.name
+  #   facet.items
   # end
   # "caches" the result in the @facets instance var
   def facets
     @facets ||= (
       facet_fields.map do |(facet_field_name,values_and_hits)|
         facet = FacetField.new(facet_field_name)
-        # the values_and_hits_list is an array where a value is immediately followed by it's hit count
-        # so we shift off an item (the value)
-        (values_and_hits.size/2).times do |index|
-          facet.items << FacetItem.new(values_and_hits[index * 2], values_and_hits[index * 2 + 1])
+        Hash[*values_and_hits].each_pair do |value,hits|
+          facet.items << FacetItem.new(value, hits)
         end
         facet
       end
