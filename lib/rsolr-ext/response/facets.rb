@@ -17,8 +17,8 @@ module RSolr::Ext::Response::Facets
     @facets ||= (
       facet_fields.map do |(facet_field_name,values_and_hits)|
         facet = FacetField.new(facet_field_name)
-        Hash[*values_and_hits].each_pair do |value,hits|
-          facet.items << FacetItem.new(value, hits)
+        (values_and_hits.size/2).times do |index|
+          facet.items << FacetItem.new(values_and_hits[index*2], values_and_hits[index*2+1])
         end
         facet
       end
