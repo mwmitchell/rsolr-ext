@@ -34,6 +34,6 @@ Gem::Specification.new do |s|
 	
 	s.extra_rdoc_files = %w(LICENSE README.rdoc)
 	
-	s.add_dependency("rsolr", ["= 0.10.0"])
+	s.add_dependency("rsolr", ["=0.10.0"])
 	
 end
