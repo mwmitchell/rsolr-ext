@@ -37,6 +37,14 @@ module RSolr
       connection
     end
     
+    # c = RSolr::Ext.connect
+    # c.find(:q=>'*:*').docs.size
+    def self.direct_connect(*args)
+      connection = RSolr.direct_connect(*args)
+      connection.extend RSolr::Ext::Connection
+      connection
+    end
+    
   end
   
 end

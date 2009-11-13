@@ -18,7 +18,7 @@ class RSolrExtConnectionTest < Test::Unit::TestCase
   test 'the #find method with a custom request handler' do
     connection = RSolr::Ext.connect
     response = connection.find '/select', :q=>'*:*'
-    assert response.adapter_response[:path]=~/\/select/
+    assert response.raw[:path]=~/\/select/
   end
   
   test 'the response' do

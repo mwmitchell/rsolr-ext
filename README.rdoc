@@ -25,13 +25,6 @@ The #luke method returns a Hash/Mash result of a /admin/luke?numTerms=0 request:
 ===#find
 The #find method listens for certain keys. All other keys are ignored, allowing the ability to mix-and-match special keys with normal Solr param keys. The recognized keys are describe below.
 
-
-:page - This maps to the Solr "start" param. The current "page" in the results set. RSolr::Ext handles the page-to-rows math for you.
-
-
-:per_page - This maps to the Solr "rows" param. How many "pages" in the result.
-
-
 :queries - This key maps to the Solr "q" param. Accepts a string, array or hash. When an array is used, each value is joined by a space. When a hash is used, the keys are used as Solr fields.
 
 * :queries => 'normal' BECOMES ?q=normal
@@ -73,8 +66,6 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 ==Request Example
   solr = RSolr::Ext.connect
   solr_params = {
-    :page=>2,
-    :per_page=>10,
     :phrases=>{:name=>'This is a phrase'},
     :filters=>['test', {:price=>(1..10)}],
     :phrase_filters=>{:manu=>['Apple']},
@@ -94,8 +85,6 @@ RSolr::Ext decorates the normal output hash from RSolr and adds some helpful met
   response.ok?
   response.params
   response.docs
-  response.docs.previous_page
-  response.docs.next_page
   response.facets.each do |facet|
     puts facet.name
     facet.items.each do |item|
@@ -104,10 +93,6 @@ RSolr::Ext decorates the normal output hash from RSolr and adds some helpful met
   end
 
 You can access values in the response hash using symbols or strings.
-
-===Documents/Pagination
-If you wanna paginate, just throw the collection into the WillPaginate view helper.
-  <%= will_paginate response.docs %>
 
 ==The "Model" Module
 You can create your own <read-only> "models" using RSolr::Ext::Model

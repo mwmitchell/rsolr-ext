@@ -4,17 +4,6 @@ module RSolr::Ext::Request
     
     def map input
       output = {}
-      if input[:per_page]
-        output[:rows] = input.delete(:per_page).to_i
-      end
-      
-      if page = input.delete(:page)
-        raise ':per_page must be set when using :page' unless output[:rows]
-        page = page.to_s.to_i-1
-        page = page < 1 ? 0 : page
-        output[:start] = page * output[:rows]
-      end
-      
       if queries = input.delete(:queries)
         output[:q] = append_to_param output[:q], build_query(queries, false)
       end
