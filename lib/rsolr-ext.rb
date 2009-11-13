@@ -21,7 +21,7 @@ module RSolr
   
   module Ext
     
-    VERSION = '0.9.6.5'
+    VERSION = '0.10.1'
     
     autoload :Connection, 'rsolr-ext/connection.rb'
     autoload :Doc, 'rsolr-ext/doc.rb'
