@@ -47,6 +47,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
     
     first_facet = r.facets.first
     assert_equal 'cat', first_facet.name
+    
     assert_equal 10, first_facet.items.size
     
     expected = first_facet.items.collect do |item|

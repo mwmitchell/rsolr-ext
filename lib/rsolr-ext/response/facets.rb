@@ -1,11 +1,19 @@
 module RSolr::Ext::Response::Facets
   
   # represents a facet value; which is a field value and its hit count
-  FacetItem = Struct.new :value,:hits
+  class FacetItem
+    attr_reader :value, :hits
+    def initialize value, hits
+      @value, @hits = value, hits
+    end
+  end
   
   # represents a facet; which is a field and its values
-  FacetField = Struct.new :name, :items do
-    def items; @items ||= [] end
+  class FacetField
+    attr_reader :name, :items
+    def initialize name, items
+      @name, @items = name, items
+    end
   end
   
   # @response.facets.each do |facet|
@@ -16,11 +24,10 @@ module RSolr::Ext::Response::Facets
   def facets
     @facets ||= (
       facet_fields.map do |(facet_field_name,values_and_hits)|
-        facet = FacetField.new(facet_field_name)
-        (values_and_hits.size/2).times do |index|
-          facet.items << FacetItem.new(values_and_hits[index*2], values_and_hits[index*2+1])
+        items = (values_and_hits.size/2).times.map do |index|
+          FacetItem.new(values_and_hits[index*2], values_and_hits[index*2+1])
         end
-        facet
+        FacetField.new(facet_field_name, items)
       end
     )
   end
