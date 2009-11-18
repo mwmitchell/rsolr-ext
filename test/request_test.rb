@@ -1,6 +1,3 @@
-require 'test_unit_test_case'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
-
 class RSolrExtRequestTest < Test::Unit::TestCase
   
   test 'standard request' do

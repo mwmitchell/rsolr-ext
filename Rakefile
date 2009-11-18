@@ -1,11 +1,14 @@
-require 'rubygems'
-
+require 'rake'
+require 'rake/testtask'
+require 'rake/rdoctask'
 require 'rake/gempackagetask'
 
-spec = eval(File.read(File.join(File.dirname(__FILE__), 'rsolr-ext.gemspec')))
-
-task :default => [:package]
-
-Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
+ENV['RUBYOPT'] = '-W1'
+ 
+task :environment do
+  require File.dirname(__FILE__) + '/lib/rsolr-ext'
 end
+ 
+Dir['tasks/*.rake'].each { |t| load t }
+
+task :default => ['test']

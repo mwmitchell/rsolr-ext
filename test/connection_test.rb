@@ -1,7 +1,3 @@
-require 'test_unit_test_case'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
-require 'helper'
-
 class RSolrExtConnectionTest < Test::Unit::TestCase
   
   test 'the #connect method' do
@@ -11,10 +7,8 @@ class RSolrExtConnectionTest < Test::Unit::TestCase
   
   test 'the #find method' do
     connection = RSolr::Ext.connect
-    response = connection.find 3, 10, :q=>'*:*'#, :page=>1, :per_page=>10
+    response = connection.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
     assert response.kind_of?(Mash)
-    #r = connection.find 3, 5, :q=>'*:*', :phrase_queries=>'rose'
-    #assert ! r.header[:params].include?(:phrase_queries)
   end
   
   test 'the #find method with a custom request handler' do

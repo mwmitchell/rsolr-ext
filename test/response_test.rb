@@ -1,7 +1,3 @@
-require 'test_unit_test_case'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr-ext')
-require 'helper'
-
 class RSolrExtResponseTest < Test::Unit::TestCase
   
   test 'base response class' do
