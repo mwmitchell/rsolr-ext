@@ -10,6 +10,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   test 'standard response class' do
     raw_response = eval(mock_query_response)
     r = RSolr::Ext::Response::Base.new(raw_response)
+    
     assert r.respond_to?(:response)
     assert r.ok?
     assert_equal 11, r.docs.size

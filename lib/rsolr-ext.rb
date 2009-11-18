@@ -29,21 +29,15 @@ module RSolr
     autoload :Response, 'rsolr-ext/response.rb'
     autoload :Model, 'rsolr-ext/model.rb'
     
-    # c = RSolr::Ext.connect
-    # c.find(:q=>'*:*').docs.size
-    def self.connect(*args)
-      connection = RSolr.connect(*args)
-      connection.extend RSolr::Ext::Connection
-      connection
+    module Connectors
+      [:connect, :direct_connect].each do |m|
+        define_method m do |*args|
+          RSolr.send(m, *args).extend RSolr::Ext::Connection
+        end
+      end
     end
     
-    # c = RSolr::Ext.connect
-    # c.find(:q=>'*:*').docs.size
-    def self.direct_connect(*args)
-      connection = RSolr.direct_connect(*args)
-      connection.extend RSolr::Ext::Connection
-      connection
-    end
+    extend Connectors
     
   end
   

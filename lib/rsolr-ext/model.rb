@@ -34,13 +34,13 @@ module RSolr::Ext::Model
     end
     
   end
-
+  
   #
-  # Findable is a module that gets mixed into the SolrDocument class object.
+  # Findable is a module that gets mixed into the SolrDocument *class* object.
   # These methods will be available through the class like: SolrDocument.find and SolrDocument.find_by_id
   #
   module Findable
-  
+    
     attr_accessor :connection, :default_params
     
     def connection
