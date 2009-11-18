@@ -11,23 +11,13 @@ module RSolr::Ext::Connection
   # If a hash is used for solr params, all of the normal RSolr::Ext::Request
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
-  #
   def find *args
-    if args[0].to_s =~ /^[0-9]$+/
-      raise "If first argument is the 'page', then the second must be the 'per_page' value" unless args[1].to_s=~/^[0-9]+$/
-      page, per_page = args.shift, args.shift
-    end
     # remove the handler arg - the first, if it is a string OR set default
     path = args.first.is_a?(String) ? args.shift : '/select'
     # remove the params - the first, if it is a Hash OR set default
     params = args.first.kind_of?(Hash) ? args.shift : {}
-    if params[:page] or params[:per_page]
-      STDERR.puts "RSolr::Ext -> Deprecation Notice: Pagination using :page and :per_page no longer supported. Please use find(page, per_page, path, params) instead."
-      page ||= params.delete :page
-      per_page ||= params.delete :per_page
-    end
     # send path, map params and send the rest of the args along
-    response = page.nil? ? self.request(path, RSolr::Ext::Request.map(params), *args) : self.paginate(page, per_page, path, RSolr::Ext::Request.map(params), *args)
+    response = self.request path, RSolr::Ext::Request.map(params), *args
     RSolr::Ext::Response::Base.new(response)
   end
   
