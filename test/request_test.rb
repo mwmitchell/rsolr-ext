@@ -23,8 +23,28 @@ class RSolrExtRequestTest < Test::Unit::TestCase
     solr_params = RSolr::Ext::Request.map(
       :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
     )
-    expected = {:fq=>["color:\"red\"", "color:\"blue\"", "manu:\"Apple\"", "manu:\"ASG\""]}
-    assert expected, solr_params
+    
+    assert_equal 4, solr_params[:fq].size
+    assert solr_params[:fq].include?("color:\"red\"")
+    assert solr_params[:fq].include?("color:\"blue\"")
+    assert solr_params[:fq].include?("manu:\"Apple\"")
+    assert solr_params[:fq].include?("manu:\"ASG\"")
+    
+  end
+  
+  test ':filters and :phrase_filters will play nice with :fq' do
+    solr_params = RSolr::Ext::Request.map(
+      :fq => 'blah blah',
+      :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
+    )
+    expected = {:fq=>["blah blah", "color:\"red\"", "color:\"blue\"", "manu:\"Apple\"", "manu:\"ASG\""]}
+    
+    assert_equal 5, solr_params[:fq].size
+    assert solr_params[:fq].include?("blah blah")
+    assert solr_params[:fq].include?("color:\"red\"")
+    assert solr_params[:fq].include?("color:\"blue\"")
+    assert solr_params[:fq].include?("manu:\"Apple\"")
+    assert solr_params[:fq].include?("manu:\"ASG\"")
   end
   
 end

@@ -2,7 +2,9 @@ module RSolr::Ext::Request
   
   module Params
     
-    def map input
+    def map input_params
+      input = input_params.dup
+      
       output = {}
       
       if input[:per_page]
@@ -15,6 +17,10 @@ module RSolr::Ext::Request
         page = page < 1 ? 0 : page
         output[:start] = page * output[:rows]
       end
+      
+      # remove the input :q params
+      output[:q] = input.delete :q
+      output[:fq] = input.delete :fq
       
       if queries = input.delete(:queries)
         output[:q] = append_to_param output[:q], build_query(queries, false)
