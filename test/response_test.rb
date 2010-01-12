@@ -86,17 +86,17 @@ class RSolrExtResponseTest < Test::Unit::TestCase
     assert_equal :test, r.params['test']
   end
   
-  test 'the response provides the original request params and rows should be 11' do
+  test 'the response provides the solr-returned params and rows should be 11' do
     raw_response = eval(mock_query_response)
     r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
     assert_equal '11', r.params[:rows].to_s
   end
   
-  test 'the response provides the original request params if responseHeader["params"] does not exist' do
+  test 'the response provides the ruby request params if responseHeader["params"] does not exist' do
     raw_response = eval(mock_query_response)
     raw_response.delete 'responseHeader'
-    r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 11)
-    assert_equal '11', r.params[:rows].to_s
+    r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 999)
+    assert_equal '999', r.params[:rows].to_s
   end
   
 =begin
