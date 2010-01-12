@@ -18,7 +18,7 @@ module RSolr::Ext::Connection
     params = args.first.kind_of?(Hash) ? args.shift : {}
     # send path, map params and send the rest of the args along
     response = self.request path, RSolr::Ext::Request.map(params), *args
-    RSolr::Ext::Response::Base.new(response)
+    RSolr::Ext::Response::Base.new(response, path, params)
   end
   
   # TWO modes of arguments:

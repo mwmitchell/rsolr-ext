@@ -7,10 +7,12 @@ module RSolr::Ext::Response
   class Base < Mash
     
     attr :original_hash
+    attr_reader :request_path, :request_params
     
-    def initialize hash
+    def initialize hash, handler, request_params
       super hash
       @original_hash = hash
+      @request_path, @request_params = request_path, request_params
       extend Response# if self['response']
       extend Docs# if self['response'] and self['response']['docs']
       extend Facets# if self['facet_counts']
@@ -21,12 +23,16 @@ module RSolr::Ext::Response
       self['responseHeader']
     end
     
+    def rows
+      params[:rows].to_i
+    end
+    
     def params
-      header['params']
+      (header and header['params']) ? header['params'] : request_params
     end
     
     def ok?
-      header['status'] == 0
+      (header and header['status']) ? header['status'] == 0 : nil
     end
     
     def method_missing *args, &blk
@@ -43,7 +49,15 @@ module RSolr::Ext::Response
     
     # short cut to response['numFound']
     def total
-      response[:numFound]
+      response[:numFound].to_s.to_i
+    end
+    
+    def total
+      response[:numFound].to_s.to_i
+    end
+    
+    def start
+      response[:start].to_s.to_i
     end
     
   end

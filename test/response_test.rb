@@ -1,15 +1,26 @@
 class RSolrExtResponseTest < Test::Unit::TestCase
   
-  test 'base response class' do
+  def create_response
     raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Base.new(raw_response)
+    RSolr::Ext::Response::Base.new(raw_response, '/select', raw_response['params'])
+  end
+  
+  test 'base response class' do
+    r = create_response
     assert r.respond_to?(:header)
     assert r.ok?
   end
   
+  test 'pagination related methods' do
+    r = create_response
+    assert_equal 11, r.rows
+    assert_equal 26, r.total
+    assert_equal 0, r.start
+    assert_equal 11, r.docs.per_page
+  end
+  
   test 'standard response class' do
-    raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Base.new(raw_response)
+    r = create_response
     
     assert r.respond_to?(:response)
     assert r.ok?
@@ -23,8 +34,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   end
   
   test 'standard response doc ext methods' do
-    raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Base.new(raw_response)
+    r = create_response
     doc = r.docs.first
     assert doc.has?(:cat, /^elec/)
     assert ! doc.has?(:cat, 'elec')
@@ -36,8 +46,7 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   end
   
   test 'Response::Standard facets' do
-    raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Base.new(raw_response)
+    r = create_response
     assert_equal 2, r.facets.size
     
     field_names = r.facets.collect{|facet|facet.name}
@@ -65,10 +74,29 @@ class RSolrExtResponseTest < Test::Unit::TestCase
   end
   
   test 'response::standard facet_by_field_name' do
-    raw_response = eval(mock_query_response)
-    r = RSolr::Ext::Response::Base.new(raw_response)
+    r = create_response
     facet = r.facet_by_field_name('cat')
     assert_equal 'cat', facet.name
+  end
+  
+  test 'the response provides the responseHeader params' do
+    raw_response = eval(mock_query_response)
+    raw_response['responseHeader']['params']['test'] = :test
+    r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', raw_response['params'])
+    assert_equal :test, r.params['test']
+  end
+  
+  test 'the response provides the original request params and rows should be 11' do
+    raw_response = eval(mock_query_response)
+    r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
+    assert_equal '11', r.params[:rows].to_s
+  end
+  
+  test 'the response provides the original request params if responseHeader["params"] does not exist' do
+    raw_response = eval(mock_query_response)
+    raw_response.delete 'responseHeader'
+    r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 11)
+    assert_equal '11', r.params[:rows].to_s
   end
   
 =begin

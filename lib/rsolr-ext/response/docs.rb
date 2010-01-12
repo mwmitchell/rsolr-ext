@@ -44,9 +44,9 @@ module RSolr::Ext::Response::Docs
     d = base['response']['docs']
     d.each{|doc| doc.extend RSolr::Ext::Doc }
     d.extend Pageable
-    d.per_page = base['responseHeader']['params']['rows'].to_s.to_i
-    d.start = base['response']['start'].to_s.to_i
-    d.total = base['response']['numFound'].to_s.to_i
+    d.per_page = base.rows
+    d.start = base.start
+    d.total = base.total
   end
   
   def docs
