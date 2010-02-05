@@ -17,28 +17,29 @@ end
 require 'rubygems'
 require 'rsolr'
 
-module RSolr
+module RSolr::Ext
   
-  module Ext
-    
-    VERSION = '0.11.1'
-    
-    autoload :Connection, 'rsolr-ext/connection.rb'
-    autoload :Doc, 'rsolr-ext/doc.rb'
-    autoload :Request, 'rsolr-ext/request.rb'
-    autoload :Response, 'rsolr-ext/response.rb'
-    autoload :Model, 'rsolr-ext/model.rb'
-    
-    module Connectors
-      [:connect, :direct_connect].each do |m|
-        define_method m do |*args|
-          RSolr.send(m, *args).extend RSolr::Ext::Connection
-        end
-      end
-    end
-    
-    extend Connectors
-    
+  autoload :Client, 'rsolr-ext/client.rb'
+  autoload :Doc, 'rsolr-ext/doc.rb'
+  autoload :Request, 'rsolr-ext/request.rb'
+  autoload :Response, 'rsolr-ext/response.rb'
+  autoload :Model, 'rsolr-ext/model.rb'
+  
+  def self.version
+    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
+  end
+  
+  VERSION = self.version
+  
+  # modify the RSolr::Client (provides #find and #luke methods)
+  RSolr::Client.class_eval do
+    include RSolr::Ext::Client
+  end
+  
+  # this is for backward compatibility: RSolr::Ext.connect
+  # recommended way is to just use RSolr.connect
+  def connect *args, &blk
+    RSolr.connect *args, &blk
   end
   
 end

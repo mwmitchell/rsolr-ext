@@ -1,4 +1,4 @@
-module RSolr::Ext::Connection
+module RSolr::Ext::Client
   
   # TWO modes of arguments:
   #
