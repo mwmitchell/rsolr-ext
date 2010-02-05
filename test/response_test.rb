@@ -99,33 +99,4 @@ class RSolrExtResponseTest < Test::Unit::TestCase
     assert_equal '999', r.params[:rows].to_s
   end
   
-=begin
-  
-  # pagination for facets has been commented out in the response/facets module.
-  # ...need to think more about how this can be handled
-  
-  test 'response::standard facets.paginate' do
-    raw_response = eval(mock_query_response)
-    raw_response['responseHeader']['params']['facet.offset'] = 1
-    raw_response['responseHeader']['params']['facet.limit'] = 2
-    
-    r = RSolr::Ext::Response::Standard.new(raw_response)
-    
-    assert_equal 2, r.facets.current_page
-    
-    # always 1 less than facet.limit
-    assert_equal 1, r.facets.per_page
-    
-    assert_equal 3, r.facets.next_page
-    
-    assert_equal 1, r.facets.previous_page
-    
-    # can't know how many pages there are with facets.... so we set it to -1
-    assert_equal -1, r.facets.total_pages
-    
-    assert r.facets.has_next?
-    assert r.facets.has_previous?
-  end
-=end
-  
 end
