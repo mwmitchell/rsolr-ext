@@ -11,23 +11,44 @@ describe RSolr::Ext do
     end
     
     it 'should produce results from the #find method' do
-      response = connection.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
+      c = connection
+      c.should_receive(:request).
+        with('/select', {:rows=>10, :start=>20, :q=>"*:*"}).
+          and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
+      response = c.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
       response.should be_a(Mash)
     end
     
     it 'the #find method with a custom request handler' do
-      response = connection.find '/select', :q=>'*:*'
+      c = connection
+      expected_response = {'response'=>{'docs' => []}, 'responseHeader' => {}}
+      # ok this is hacky... the raw method needs to go into a mixin dude
+      def expected_response.raw
+        {:path => '/select'}
+      end
+      c.should_receive(:request).
+        with('/select', {:q=>'*:*'}).
+          and_return(expected_response)
+      response = c.find '/select', :q=>'*:*'
       response.raw[:path].should match(/\/select/)
     end
     
     it 'the response' do
-      response = connection.find :q=>'*:*'
+      c = connection
+      c.should_receive(:request).
+        with('/select', :q=>'*:*').
+          and_return({'response'=>{'docs' => []}, 'responseHeader' => {'status'=>0}})
+      response = c.find :q=>'*:*'
       response.should respond_to(:ok?)
       response.ok?.should == true
     end
     
     it 'the #luke method' do
-      info = connection.luke
+      c = connection
+      c.should_receive(:request).
+        with('/admin/luke', {"numTerms"=>0}).
+          and_return({"fields"=>nil, "index"=>nil, "info" => nil})
+      info = c.luke
       info.should be_a(Mash)
       info.should have_key('fields')
       info.should have_key('index')

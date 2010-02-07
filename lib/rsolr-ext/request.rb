@@ -20,7 +20,7 @@ module RSolr::Ext::Request
       
       # remove the input :q params
       output[:q] = input.delete :q
-      output[:fq] = input.delete :fq
+      output[:fq] = input.delete(:fq) if input[:fq]
       
       if queries = input.delete(:queries)
         output[:q] = append_to_param output[:q], build_query(queries, false)
