@@ -142,71 +142,74 @@ describe RSolr::Ext do
       r.should be_a(RSolr::Ext::Response::Facets)
     end
     
-    # it 'standard response doc ext methods' do
-    #   r = create_response
-    #   doc = r.docs.first
-    #   doc.has?(:cat, /^elec/).should == true
-    #   doc.has?(:cat, 'elec').should_not == true
-    #   doc.has?(:cat, 'electronics').should == true
-    #   
-    #   doc.get(:cat).should == 'electronics'
-    #   doc.get(:xyz).should == nil
-    #   doc.get(:xyz, :default=>'def').should == 'def'
-    # end
-    # 
-    # it 'Response::Standard facets' do
-    #   r = create_response
-    #   assert_equal 2, r.facets.size
-    # 
-    #   field_names = r.facets.collect{|facet|facet.name}
-    #   assert field_names.include?('cat')
-    #   assert field_names.include?('manu')
-    # 
-    #   first_facet = r.facets.first
-    #   assert_equal 'cat', first_facet.name
-    # 
-    #   assert_equal 10, first_facet.items.size
-    # 
-    #   expected = first_facet.items.collect do |item|
-    #     item.value + ' - ' + item.hits.to_s
-    #   end.join(', ')
-    #   assert_equal "electronics - 14, memory - 3, card - 2, connector - 2, drive - 2, graphics - 2, hard - 2, monitor - 2, search - 2, software - 2", expected
-    # 
-    #   r.facets.each do |facet|
-    #     assert facet.respond_to?(:name)
-    #     facet.items.each do |item|
-    #       assert item.respond_to?(:value)
-    #       assert item.respond_to?(:hits)
-    #     end
-    #   end
-    # 
-    # end
-    # 
-    # it 'response::standard facet_by_field_name' do
-    #   r = create_response
-    #   facet = r.facet_by_field_name('cat')
-    #   assert_equal 'cat', facet.name
-    # end
-    # 
-    # it 'the response provides the responseHeader params' do
-    #   raw_response = eval(mock_query_response)
-    #   raw_response['responseHeader']['params']['test'] = :test
-    #   r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', raw_response['params'])
-    #   assert_equal :test, r.params['test']
-    # end
-    # 
-    # it 'the response provides the solr-returned params and rows should be 11' do
-    #   raw_response = eval(mock_query_response)
-    #   r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
-    #   assert_equal '11', r.params[:rows].to_s
-    # end
-    # 
-    # it 'the response provides the ruby request params if responseHeader["params"] does not exist' do
-    #   raw_response = eval(mock_query_response)
-    #   raw_response.delete 'responseHeader'
-    #   r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 999)
-    #   assert_equal '999', r.params[:rows].to_s
-    # end
+    it 'standard response doc ext methods' do
+      r = create_response
+      
+      doc = r.docs.first
+      doc.has?(:cat, /^elec/).should == true
+      doc.has?(:cat, 'elec').should_not == true
+      doc.has?(:cat, 'electronics').should == true
+      
+      doc.get(:cat).should == 'electronics, hard drive'
+      doc.get(:xyz).should == nil
+      doc.get(:xyz, :default=>'def').should == 'def'
+    end
+    
+    it 'Response::Standard facets' do
+      r = create_response
+      r.facets.size.should == 2
+    
+      field_names = r.facets.collect{|facet|facet.name}
+      field_names.include?('cat').should == true
+      field_names.include?('manu').should == true
+      
+      first_facet = r.facets.first
+      first_facet.name.should == 'cat'
+      
+      first_facet.items.size.should == 10
+      
+      expected = "electronics - 14, memory - 3, card - 2, connector - 2, drive - 2, graphics - 2, hard - 2, monitor - 2, search - 2, software - 2"
+      received = first_facet.items.collect do |item|
+        item.value + ' - ' + item.hits.to_s
+      end.join(', ')
+      
+      expected.should == received
+    
+      r.facets.each do |facet|
+        facet.respond_to?(:name).should == true
+        facet.items.each do |item|
+          item.respond_to?(:value).should == true
+          item.respond_to?(:hits).should == true
+        end
+      end
+    
+    end
+    
+    it 'response::standard facet_by_field_name' do
+      r = create_response
+      facet = r.facet_by_field_name('cat')
+      facet.name.should == 'cat'
+    end
+    
+    it 'the response provides the responseHeader params' do
+      raw_response = eval(mock_query_response)
+      raw_response['responseHeader']['params']['test'] = :test
+      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', raw_response['params'])
+      r.params['test'].should == :test
+    end
+    
+    it 'the response provides the solr-returned params and rows should be 11' do
+      raw_response = eval(mock_query_response)
+      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
+      r.params[:rows].to_s.should == '11'
+    end
+    
+    it 'the response provides the ruby request params if responseHeader["params"] does not exist' do
+      raw_response = eval(mock_query_response)
+      raw_response.delete 'responseHeader'
+      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 999)
+      r.params[:rows].to_s.should == '999'
+    end
     
   end
   
