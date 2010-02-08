@@ -19,7 +19,7 @@ describe RSolr::Ext do
       response.should be_a(Mash)
     end
     
-    it 'the #find method with a custom request handler' do
+    it 'should call the #find method with a custom request handler' do
       c = connection
       expected_response = {'response'=>{'docs' => []}, 'responseHeader' => {}}
       # ok this is hacky... the raw method needs to go into a mixin dude
@@ -33,7 +33,7 @@ describe RSolr::Ext do
       response.raw[:path].should match(/\/select/)
     end
     
-    it 'the response' do
+    it 'should be ok' do
       c = connection
       c.should_receive(:request).
         with('/select', :q=>'*:*').
@@ -43,7 +43,7 @@ describe RSolr::Ext do
       response.ok?.should == true
     end
     
-    it 'the #luke method' do
+    it 'should call the #luke method' do
       c = connection
       c.should_receive(:request).
         with('/admin/luke', {"numTerms"=>0}).
@@ -59,7 +59,7 @@ describe RSolr::Ext do
   
   context 'requests' do
 
-    it 'standard request' do
+    it 'should create a valid request' do
       solr_params = RSolr::Ext::Request.map(
         :page=>'2',
         :per_page=>'10',
@@ -78,7 +78,7 @@ describe RSolr::Ext do
       solr_params[:facet].should == true
     end
     
-    it 'fq param using the phrase_filters mapping' do
+    it 'should map fq using the phrase_filters mapping' do
       solr_params = RSolr::Ext::Request.map(
         :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
       )
@@ -91,7 +91,7 @@ describe RSolr::Ext do
       
     end
     
-    it ':filters and :phrase_filters will play nice with :fq' do
+    it 'should map :filters and :phrase_filters while keeping an existing :fq' do
       solr_params = RSolr::Ext::Request.map(
         :fq => 'blah blah',
         :phrase_filters=>{:manu=>['Apple', 'ASG'], :color=>['red', 'blue']}
@@ -114,13 +114,13 @@ describe RSolr::Ext do
       RSolr::Ext::Response::Base.new(raw_response, '/select', raw_response['params'])
     end
     
-    it 'base response class' do
+    it 'should create a valid response' do
       r = create_response
       r.should respond_to(:header)
       r.ok?.should == true
     end
     
-    it 'pagination related methods' do
+    it 'should have accurate pagination numbers' do
       r = create_response
       r.rows.should == 11
       r.total.should == 26
@@ -128,7 +128,7 @@ describe RSolr::Ext do
       r.docs.per_page.should == 11
     end
     
-    it 'standard response class' do
+    it 'should create a valid response class' do
       r = create_response
     
       r.should respond_to(:response)
@@ -142,7 +142,7 @@ describe RSolr::Ext do
       r.should be_a(RSolr::Ext::Response::Facets)
     end
     
-    it 'standard response doc ext methods' do
+    it 'should create a doc with rsolr-ext methods' do
       r = create_response
       
       doc = r.docs.first
@@ -155,7 +155,7 @@ describe RSolr::Ext do
       doc.get(:xyz, :default=>'def').should == 'def'
     end
     
-    it 'Response::Standard facets' do
+    it 'should provide facet helpers' do
       r = create_response
       r.facets.size.should == 2
     
@@ -174,7 +174,7 @@ describe RSolr::Ext do
       end.join(', ')
       
       expected.should == received
-    
+      
       r.facets.each do |facet|
         facet.respond_to?(:name).should == true
         facet.items.each do |item|
@@ -182,29 +182,29 @@ describe RSolr::Ext do
           item.respond_to?(:hits).should == true
         end
       end
-    
+      
     end
     
-    it 'response::standard facet_by_field_name' do
+    it 'should return the correct value when calling facet_by_field_name' do
       r = create_response
       facet = r.facet_by_field_name('cat')
       facet.name.should == 'cat'
     end
     
-    it 'the response provides the responseHeader params' do
+    it 'should provide the responseHeader params' do
       raw_response = eval(mock_query_response)
       raw_response['responseHeader']['params']['test'] = :test
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', raw_response['params'])
       r.params['test'].should == :test
     end
     
-    it 'the response provides the solr-returned params and rows should be 11' do
+    it 'should provide the solr-returned params and "rows" should be 11' do
       raw_response = eval(mock_query_response)
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
       r.params[:rows].to_s.should == '11'
     end
     
-    it 'the response provides the ruby request params if responseHeader["params"] does not exist' do
+    it 'should provide the ruby request params if responseHeader["params"] does not exist' do
       raw_response = eval(mock_query_response)
       raw_response.delete 'responseHeader'
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 999)
