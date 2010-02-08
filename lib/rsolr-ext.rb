@@ -38,7 +38,7 @@ module RSolr::Ext
   
   # this is for backward compatibility: RSolr::Ext.connect
   # recommended way is to just use RSolr.connect
-  def connect *args, &blk
+  def self.connect *args, &blk
     RSolr.connect *args, &blk
   end
   
