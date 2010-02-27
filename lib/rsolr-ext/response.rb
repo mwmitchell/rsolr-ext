@@ -13,10 +13,10 @@ module RSolr::Ext::Response
       super hash
       @original_hash = hash
       @request_path, @request_params = request_path, request_params
-      extend Response# if self['response']
-      extend Docs# if self['response'] and self['response']['docs']
-      extend Facets# if self['facet_counts']
-      extend Spelling# if self['spellcheck']
+      extend Response
+      extend Docs
+      extend Facets
+      extend Spelling
     end
     
     def header

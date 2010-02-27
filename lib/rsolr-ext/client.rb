@@ -38,4 +38,26 @@ module RSolr::Ext::Client
     self.request(path, params).to_mash
   end
   
+  # sends request to /admin/ping
+  def ping *args
+    path = args.first.is_a?(String) ? args.shift : '/admin/ping'
+    params = args.pop || {}
+    self.request(path, params).to_mash
+  end
+  
+  # Ping the server and make sure it is alright
+  #   solr.ping?
+  #
+  # It returns true if the server pings and the status is OK
+  # It returns false otherwise -- which probably cannot happen
+  # Or raises an exception if there is a failure to connect or
+  # the ping service is not activated in the solr server
+  #
+  # The default configuration point of the PingRequestHandler
+  # in the solr server of '/admin/ping' is assumed.
+  #
+  def ping?
+    ping['status'] == 'OK'
+  end
+  
 end

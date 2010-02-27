@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr-ext}
-  s.version = "0.12.1"
+  s.version = "0.12.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-02-05}
+  s.date = %q{2010-02-09}
   s.description = %q{A query/response extension lib for RSolr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/mash.rb",
      "lib/rsolr-ext.rb",
-     "lib/rsolr-ext/connection.rb",
+     "lib/rsolr-ext/client.rb",
      "lib/rsolr-ext/doc.rb",
      "lib/rsolr-ext/model.rb",
      "lib/rsolr-ext/request.rb",

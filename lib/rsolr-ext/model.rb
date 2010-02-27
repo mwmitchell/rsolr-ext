@@ -9,7 +9,23 @@
 # number_10 = Book.find_by_id(10)
 #
 module RSolr::Ext::Model
-
+  
+  # ripped from MongoMapper!
+  module Pluggable
+    
+    def plugins
+      @plugins ||= []
+    end
+    
+    def plugin(mod)
+      extend mod::ClassMethods     if mod.const_defined?(:ClassMethods)
+      include mod::InstanceMethods if mod.const_defined?(:InstanceMethods)
+      mod.configure(self)          if mod.respond_to?(:configure)
+      plugins << mod
+    end
+    
+  end
+  
   # Class level methods for altering object instances
   module Callbacks
     
@@ -37,11 +53,11 @@ module RSolr::Ext::Model
   
   #
   # Findable is a module that gets mixed into the SolrDocument *class* object.
-  # These methods will be available through the class like: SolrDocument.find and SolrDocument.find_by_id
+  # These methods will be available through the class: SolrDocument.find
   #
   module Findable
     
-    attr_accessor :connection, :default_params
+    attr_accessor :connection
     
     def connection
       @connection ||= RSolr::Ext.connect
@@ -49,32 +65,27 @@ module RSolr::Ext::Model
     
     # this method decorates the connection find method
     # and then creates new instance of the class that uses this module.
-    def find(*args)
-      decorate_response_docs connection.find(*args)
+    def find *args, &block
+      response = connection.find(*args)
+      response.docs.map {|doc|
+        d = self.new doc, response
+        yield d if block_given?
+        d
+      }
     end
     
-    # this method decorates the connection find_by_id method
-    # and then creates new instance of the class that uses this module.
-    def find_by_id(id, solr_params={}, opts={})
-      decorate_response_docs connection.find_by_id(id, solr_params, opts)
-    end
-  
-    protected
-  
-    def decorate_response_docs response
-      response['response']['docs'].map!{|d| self.new d }
-      response
-    end
-  
   end
   
   # Called by Ruby Module API
   # extends this *class* object
   def self.included(base)
+    base.extend Pluggable
     base.extend Callbacks
     base.extend Findable
     base.send :include, RSolr::Ext::Doc
   end
+  
+  attr_reader :solr_response
   
   # The original object passed in to the #new method
   attr :_source
@@ -82,8 +93,9 @@ module RSolr::Ext::Model
   # Constructor **for the class that is getting this module included**
   # source_doc should be a hash or something similar
   # calls each of after_initialize blocks
-  def initialize(source_doc={})
+  def initialize(source_doc={}, solr_response=nil)
     @_source = source_doc.to_mash
+    @solr_response = solr_response
     self.class.hooks.each do |h|
       instance_eval &h
     end

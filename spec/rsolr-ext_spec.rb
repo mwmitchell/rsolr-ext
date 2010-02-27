@@ -4,14 +4,14 @@ describe RSolr::Ext do
   
   context RSolr::Client do
     
-    let(:connection){RSolr.connect}
+    let(:client){RSolr.connect}
     
     it 'should now have a #find method' do
-      connection.should respond_to(:find)
+      client.should respond_to(:find)
     end
     
     it 'should produce results from the #find method' do
-      c = connection
+      c = client
       c.should_receive(:request).
         with('/select', {:rows=>10, :start=>20, :q=>"*:*"}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
@@ -20,7 +20,7 @@ describe RSolr::Ext do
     end
     
     it 'should call the #find method with a custom request handler' do
-      c = connection
+      c = client
       expected_response = {'response'=>{'docs' => []}, 'responseHeader' => {}}
       # ok this is hacky... the raw method needs to go into a mixin dude
       def expected_response.raw
@@ -34,7 +34,7 @@ describe RSolr::Ext do
     end
     
     it 'should be ok' do
-      c = connection
+      c = client
       c.should_receive(:request).
         with('/select', :q=>'*:*').
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {'status'=>0}})
@@ -44,7 +44,7 @@ describe RSolr::Ext do
     end
     
     it 'should call the #luke method' do
-      c = connection
+      c = client
       c.should_receive(:request).
         with('/admin/luke', {"numTerms"=>0}).
           and_return({"fields"=>nil, "index"=>nil, "info" => nil})
@@ -54,7 +54,24 @@ describe RSolr::Ext do
       info.should have_key('index')
       info.should have_key('info')
     end
-  
+    
+    it 'should forwad #ping? calls to the connection' do
+      client.connection.should_receive(:request).
+        with('/admin/ping', :wt => :ruby ).
+        and_return( :params => { :wt => :ruby },
+                    :status_code => 200,
+                    :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
+      client.ping?
+    end
+
+    it 'should raise an error if the ping service is not available' do
+      client.connection.should_receive(:request).
+        with('/admin/ping', :wt => :ruby ).
+        # the first part of the what the message would really be
+        and_raise( RSolr::RequestError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
+        lambda { client.ping? }.should raise_error( RSolr::RequestError )
+    end
+    
   end
   
   context 'requests' do
