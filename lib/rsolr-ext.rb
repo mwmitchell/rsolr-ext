@@ -1,10 +1,6 @@
 # add this directory to the load path if it hasn't already been added
 
-lambda { |base|
-  $: << base unless $:.include?(base) || $:.include?(File.expand_path(base))
-}.call(File.dirname(__FILE__))
-
-require 'mash' unless defined?(Mash)
+require File.join(File.dirname(__FILE__), 'mash') unless defined?(Mash)
 
 unless Hash.respond_to?(:to_mash)
   class Hash
