@@ -121,6 +121,15 @@ describe RSolr::Ext do
       solr_params[:fq].should include("manu:\"Apple\"")
       solr_params[:fq].should include("manu:\"ASG\"")
     end
+
+    it 'should map arrays of ranges in :phrase_filters' do
+        solr_params = RSolr::Ext::Request.map(
+          :phrase_filters=>{:range=>[1940..2020]}
+        )
+
+        solr_params[:fq].size.should == 1
+        solr_params[:fq].should include("range:[1940 TO 2020]")
+    end
     
   end
   

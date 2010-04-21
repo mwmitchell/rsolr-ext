@@ -72,6 +72,8 @@ module RSolr::Ext::Request
         value.collect do |v|
           build_query(v, quote_string)
         end.flatten
+      when Range
+        build_range(value)
       when Hash
         return value.collect do |(k,v)|
           if v.is_a?(Range)
