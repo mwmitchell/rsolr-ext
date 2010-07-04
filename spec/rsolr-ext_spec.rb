@@ -4,7 +4,7 @@ describe RSolr::Ext do
   
   context RSolr::Client do
     
-    let(:client){RSolr.connect}
+    let(:client){RSolr.connect "http://localhost:9999/solr"}
     
     it 'should now have a #find method' do
       client.should respond_to(:find)
@@ -15,7 +15,9 @@ describe RSolr::Ext do
       c.should_receive(:request).
         with('/select', {:rows=>10, :start=>20, :q=>"*:*"}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
-      response = c.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
+      response = c.find :page=>3, :per_page=>10, :q=>'*:*'
+      puts "OKOKOKOKOKOKOKO"
+      puts response.request.inspect
       response.should be_a(Mash)
     end
     

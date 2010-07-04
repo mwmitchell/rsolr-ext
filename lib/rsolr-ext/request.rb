@@ -3,20 +3,8 @@ module RSolr::Ext::Request
   module Params
     
     def map input_params
-      input = input_params.dup
-      
+      input = input_params
       output = {}
-      
-      if input[:per_page]
-        output[:rows] = input.delete(:per_page).to_i
-      end
-      
-      if page = input.delete(:page)
-        raise ':per_page must be set when using :page' unless output[:rows]
-        page = page.to_s.to_i-1
-        page = page < 1 ? 0 : page
-        output[:start] = page * output[:rows]
-      end
       
       # remove the input :q params
       output[:q] = input.delete :q
@@ -47,7 +35,7 @@ module RSolr::Ext::Request
     
     # Wraps a string around double quotes
     def quote(value)
-      %("#{value}")
+      "\"#{value}\""
     end
 
     # builds a solr range query from a Range object
@@ -67,7 +55,8 @@ module RSolr::Ext::Request
     def build_query(value, quote_string=false)
       case value
       when String,Symbol
-        quote_string ? quote(value.to_s) : value.to_s
+        string_value = RSolr.escape value.to_s
+        quote_string ? quote(string_value) : string_value
       when Array
         value.collect do |v|
           build_query(v, quote_string)

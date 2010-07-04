@@ -39,3 +39,11 @@ module RSolr::Ext
   end
   
 end
+
+# solr = RSolr.connect "http://localhost:8983/solr/production"
+# puts solr.luke.inspect
+# puts solr.ping?
+
+# r = solr.find :method => :post, :data => {:q=>"*:*", :per_page => 1, :page => 1, :phrase_filters => {:id => "Peach::Hotel 4c2a35a5511055439900040c"}}
+# puts r.request.inspect
+# puts r.inspect

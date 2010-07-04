@@ -4,21 +4,31 @@ module RSolr::Ext::Client
   #
   # <request-handler-path>, <solr-params-hash>
   # OR
-  # <solr-params-hash>
+  # <rsolr-options-hash>
   #
-  # The default request-handler-path is /select
+  # The default request-handler-path is select
   # 
   # If a hash is used for solr params, all of the normal RSolr::Ext::Request
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
   def find *args
     # remove the handler arg - the first, if it is a string OR set default
-    path = args.first.is_a?(String) ? args.shift : '/select'
-    # remove the params - the first, if it is a Hash OR set default
-    params = args.first.kind_of?(Hash) ? args.shift : {}
-    # send path, map params and send the rest of the args along
-    response = self.request path, RSolr::Ext::Request.map(params), *args
-    RSolr::Ext::Response::Base.new(response, path, params)
+    path = args.first.is_a?(String) ? args.shift : 'select'
+    # remove the params -- always after path
+    opts = args.first.kind_of?(Hash) ? args.shift : {}
+    # determine the param source (POST/:data or GET/:params)
+    if opts[:method] == :post
+      params = opts[:data] ||= {}
+    else
+      params = opts[:params] ||= {}
+    end
+    params.merge! RSolr::Ext::Request.map(params)
+    if params[:page] or params[:per_page]
+      response = self.paginate params.delete(:page), params.delete(:per_page), path, opts
+    else
+      response = self.send_request path, opts
+    end
+    RSolr::Ext::Response::Base.new(response, path, opts)
   end
   
   # TWO modes of arguments:
@@ -27,22 +37,19 @@ module RSolr::Ext::Client
   # OR
   # <solr-params-hash>
   #
-  # The default request-handler-path is /admin/luke
+  # The default request-handler-path is admin/luke
   # The default params are numTerms=0
   #
   # Returns a new Mash object.
-  def luke *args
-    path = args.first.is_a?(String) ? args.shift : '/admin/luke'
-    params = args.pop || {}
-    params['numTerms'] ||= 0
-    self.request(path, params).to_mash
+  def luke opts = {}
+    opts[:params] ||= {}
+    opts[:params][:numTerms] ||= 0
+    self.send_request('admin/luke', opts).to_mash
   end
   
   # sends request to /admin/ping
-  def ping *args
-    path = args.first.is_a?(String) ? args.shift : '/admin/ping'
-    params = args.pop || {}
-    self.request(path, params).to_mash
+  def ping opts = {}
+    self.send_request('admin/ping', opts).to_mash
   end
   
   # Ping the server and make sure it is alright

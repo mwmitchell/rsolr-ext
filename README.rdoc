@@ -11,8 +11,11 @@ A set of helper methods/modules to assist in building Solr queries and handling 
 ==Requests
 To use the RSolr::Ext connection instead of the normal RSolr connection just require 'rsolr-ext':
   require 'rsolr-ext'
-  solr = RSolr.connect
-
+  solr = RSolr.connect "http://localhost:8983/solr/production"
+  r = solr.find :params => {:q=>"*:*", :per_page => 1, :page => 1, :phrase_filters => {:id => "blah::blah"}}
+  puts r.request.inspect
+  puts r.inspect
+  
 RSolr::Ext adds a #find and a #luke method to the connection object.
 
 ===#luke
