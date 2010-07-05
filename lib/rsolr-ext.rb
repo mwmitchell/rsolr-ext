@@ -40,10 +40,10 @@ module RSolr::Ext
   
 end
 
-solr = RSolr.connect "http://localhost:8983/solr/production"
-# puts solr.luke.inspect
-# puts solr.ping?
-
+# solr = RSolr.connect "http://localhost:8983/solr/production"
+# # puts solr.luke.inspect
+# # puts solr.ping?
+# 
 # r = solr.find :params => {
 #   :q=>"*:*",
 #   :per_page => 1,
@@ -52,5 +52,4 @@ solr = RSolr.connect "http://localhost:8983/solr/production"
 #   "facet" => true,
 #   "facet.field" => "amenities_sms"
 # }
-# #puts r.request.inspect
-# puts r.facets.first.items.first.inspect
+# puts r.request.inspect
