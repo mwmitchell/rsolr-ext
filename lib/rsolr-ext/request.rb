@@ -55,7 +55,7 @@ module RSolr::Ext::Request
     def build_query(value, quote_string=false)
       case value
       when String,Symbol
-        string_value = RSolr.escape value.to_s
+        string_value = value.to_s # RSolr.escape ?
         quote_string ? quote(string_value) : string_value
       when Array
         value.collect do |v|

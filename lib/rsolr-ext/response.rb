@@ -58,6 +58,17 @@ module RSolr::Ext::Response
       response[:start].to_s.to_i
     end
     
+    def docs
+      @docs ||= (
+        docs = response[:docs]
+        docs.map {|doc|
+          mash = doc.to_mash
+          mash.extend RSolr::Ext::Doc
+          mash
+        }
+      )
+    end
+    
   end
   
 end

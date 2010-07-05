@@ -12,12 +12,10 @@ describe RSolr::Ext do
     
     it 'should produce results from the #find method' do
       c = client
-      c.should_receive(:request).
-        with('/select', {:rows=>10, :start=>20, :q=>"*:*"}).
+      c.should_receive(:send_request).
+        with('select', :params => {:rows=>10, :start=>20, :q=>"*:*"}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
-      response = c.find :page=>3, :per_page=>10, :q=>'*:*'
-      puts "OKOKOKOKOKOKOKO"
-      puts response.request.inspect
+      response = c.find :params => {:page=>3, :per_page=>10, :q=>'*:*'}
       response.should be_a(Mash)
     end
     
@@ -25,30 +23,30 @@ describe RSolr::Ext do
       c = client
       expected_response = {'response'=>{'docs' => []}, 'responseHeader' => {}}
       # ok this is hacky... the raw method needs to go into a mixin dude
-      def expected_response.raw
-        {:path => '/select'}
+      def expected_response.request
+        {:path => 'select'}
       end
-      c.should_receive(:request).
-        with('/select', {:q=>'*:*'}).
+      c.should_receive(:send_request).
+        with('select', :params => {:q=>'*:*'}).
           and_return(expected_response)
-      response = c.find '/select', :q=>'*:*'
-      response.raw[:path].should match(/\/select/)
+      response = c.find 'select', :params => {:q=>'*:*'}
+      response.request[:path].should == "select"
     end
     
     it 'should be ok' do
       c = client
-      c.should_receive(:request).
-        with('/select', :q=>'*:*').
+      c.should_receive(:send_request).
+        with('select', :params => {:q=>'*:*'}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {'status'=>0}})
-      response = c.find :q=>'*:*'
+      response = c.find :params => {:q=>'*:*'}
       response.should respond_to(:ok?)
       response.ok?.should == true
     end
     
     it 'should call the #luke method' do
       c = client
-      c.should_receive(:request).
-        with('/admin/luke', {"numTerms"=>0}).
+      c.should_receive(:send_request).
+        with('admin/luke', :params => {:numTerms => 0}).
           and_return({"fields"=>nil, "index"=>nil, "info" => nil})
       info = c.luke
       info.should be_a(Mash)
@@ -57,21 +55,12 @@ describe RSolr::Ext do
       info.should have_key('info')
     end
     
-    it 'should forwad #ping? calls to the connection' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
+    it 'should forwad #ping? call ping' do
+      client.should_receive(:ping).
         and_return( :params => { :wt => :ruby },
                     :status_code => 200,
                     :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
       client.ping?
-    end
-
-    it 'should raise an error if the ping service is not available' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
-        # the first part of the what the message would really be
-        and_raise( RSolr::RequestError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
-        lambda { client.ping? }.should raise_error( RSolr::RequestError )
     end
     
   end
@@ -80,8 +69,6 @@ describe RSolr::Ext do
 
     it 'should create a valid request' do
       solr_params = RSolr::Ext::Request.map(
-        :page=>'2',
-        :per_page=>'10',
         :phrases=>{:name=>'This is a phrase'},
         :filters=>['test', {:price=>(1..10)}],
         :phrase_filters=>{:manu=>['Apple']},
@@ -90,8 +77,6 @@ describe RSolr::Ext do
         :spellcheck => true
       )
       ["test", "price:[1 TO 10]", "manu:\"Apple\""].should == solr_params[:fq]
-      solr_params[:start].should == 10
-      solr_params[:rows].should == 10
       solr_params[:q].should == "ipod name:\"This is a phrase\""
       solr_params['facet.field'].should == ['cat', 'blah']
       solr_params[:facet].should == true
@@ -148,25 +133,12 @@ describe RSolr::Ext do
       r.ok?.should == true
     end
     
-    it 'should have accurate pagination numbers' do
-      r = create_response
-      r.rows.should == 11
-      r.total.should == 26
-      r.start.should == 0
-      r.docs.per_page.should == 11
-    end
-    
     it 'should create a valid response class' do
       r = create_response
-    
       r.should respond_to(:response)
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
-      r.docs.previous_page.should == 1
-      r.docs.next_page.should == 2
-      #
-      r.should be_a(RSolr::Ext::Response::Docs)
       r.should be_a(RSolr::Ext::Response::Facets)
     end
     
@@ -235,7 +207,7 @@ describe RSolr::Ext do
     it 'should provide the ruby request params if responseHeader["params"] does not exist' do
       raw_response = eval(mock_query_response)
       raw_response.delete 'responseHeader'
-      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :rows => 999)
+      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', :params => {:rows => 999})
       r.params[:rows].to_s.should == '999'
     end
     

@@ -40,10 +40,17 @@ module RSolr::Ext
   
 end
 
-# solr = RSolr.connect "http://localhost:8983/solr/production"
+solr = RSolr.connect "http://localhost:8983/solr/production"
 # puts solr.luke.inspect
 # puts solr.ping?
 
-# r = solr.find :method => :post, :data => {:q=>"*:*", :per_page => 1, :page => 1, :phrase_filters => {:id => "Peach::Hotel 4c2a35a5511055439900040c"}}
-# puts r.request.inspect
-# puts r.inspect
+# r = solr.find :params => {
+#   :q=>"*:*",
+#   :per_page => 1,
+#   :page => 1,
+#   :phrase_filters => {:id => "Peach::Hotel 4c2a35a5511055439900040c"},
+#   "facet" => true,
+#   "facet.field" => "amenities_sms"
+# }
+# #puts r.request.inspect
+# puts r.facets.first.items.first.inspect
