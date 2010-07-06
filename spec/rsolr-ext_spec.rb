@@ -69,6 +69,8 @@ describe RSolr::Ext do
 
     it 'should create a valid request' do
       solr_params = RSolr::Ext::Request.map(
+        :page=>'2',
+        :per_page=>'10',
         :phrases=>{:name=>'This is a phrase'},
         :filters=>['test', {:price=>(1..10)}],
         :phrase_filters=>{:manu=>['Apple']},
@@ -77,6 +79,8 @@ describe RSolr::Ext do
         :spellcheck => true
       )
       ["test", "price:[1 TO 10]", "manu:\"Apple\""].should == solr_params[:fq]
+      solr_params[:start].should == 10
+      solr_params[:rows].should == 10
       solr_params[:q].should == "ipod name:\"This is a phrase\""
       solr_params['facet.field'].should == ['cat', 'blah']
       solr_params[:facet].should == true
@@ -133,12 +137,23 @@ describe RSolr::Ext do
       r.ok?.should == true
     end
     
+    it 'should have accurate pagination numbers' do
+      r = create_response
+      r.rows.should == 11
+      r.total.should == 26
+      r.start.should == 0
+      r.docs.per_page.should == 11
+    end
+    
     it 'should create a valid response class' do
       r = create_response
       r.should respond_to(:response)
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
+      r.docs.previous_page.should == 1
+      r.docs.next_page.should == 2
+      r.should be_a(RSolr::Ext::Response::Docs)
       r.should be_a(RSolr::Ext::Response::Facets)
     end
     

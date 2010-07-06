@@ -1,6 +1,7 @@
 module RSolr::Ext::Response
   
   autoload :Facets, 'rsolr-ext/response/facets'
+  autoload :Docs, 'rsolr-ext/response/docs'
   autoload :Spelling, 'rsolr-ext/response/spelling'
   
   class Base < Mash
@@ -14,6 +15,7 @@ module RSolr::Ext::Response
       @request_path, @request_context = request_path, request_context
       extend Response
       extend Facets
+      extend Docs
       extend Spelling
     end
     

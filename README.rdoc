@@ -72,7 +72,14 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 
 * :facets=>{:fields=>['cat', 'blah']} BECOMES ?facet=true&facet.field=cat&facet.field=blah
 
+===Pagination
+RSolr supports pagination through the +paginate+ method. This method modifies the response["docs"] array by adding a few useful pagination methods. These methods also make it possible to pass the response["docs"] array directly into WillPaginate. Here's an example of paginating where the "page" is 1 and the "per_page" is 10:
+  
+  @result = solr.paginate 1, 10, "select", :params => {:q => "cockroach"}
+  # in your view:
+  <%= will_paginate @result["response"]["docs"] %>
 
+NOTE: The paginate assumes the response will be a search result with the usual response["docs"] array.
 
 ==Request Example
   require 'rsolr-ext'
