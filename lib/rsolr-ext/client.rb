@@ -11,7 +11,7 @@ module RSolr::Ext::Client
   # If a hash is used for solr params, all of the normal RSolr::Ext::Request
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
-  def find *args
+  def find *args, &block
     # remove the handler arg - the first, if it is a string OR set default
     path = args.first.is_a?(String) ? args.shift : 'select'
     # remove the params -- always after path
@@ -23,30 +23,8 @@ module RSolr::Ext::Client
       params = opts[:params] ||= {}
     end
     params.merge! RSolr::Ext::Request.map(params)
-    if params[:page] or params[:per_page]
-      response = self.paginate params.delete(:page), params.delete(:per_page), path, opts
-    else
-      response = self.send_request path, opts
-    end
+    response = self.send_request path, opts, &block
     RSolr::Ext::Response::Base.new(response, path, opts)
-  end
-  
-  # solr.paginate 1, 10, "select", :params => {:q=>"*:*"}
-  def paginate page, per_page, path, opts = {}
-    page = page.to_s.to_i
-    per_page = per_page.to_s.to_i
-    source = opts[:method] == :post ? (opts[:data] ||= {}) : (opts[:params] ||= {})
-    source[:rows] = per_page
-    page = page - 1
-    page = page < 1 ? 0 : page
-    source[:start] = page * source[:rows]
-    result = send_request path, opts
-    docs = result["response"]["docs"]
-    docs.extend RSolr::Response::DocSetPagination
-    docs.per_page = per_page
-    docs.start = source[:start]
-    docs.total = result["response"]["numFound"].to_s.to_i
-    result
   end
   
   # TWO modes of arguments:
