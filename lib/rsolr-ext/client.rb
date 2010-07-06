@@ -27,15 +27,7 @@ module RSolr::Ext::Client
     RSolr::Ext::Response::Base.new(response, path, opts)
   end
   
-  # TWO modes of arguments:
-  #
   # <request-handler-path>, <solr-params-hash>
-  # OR
-  # <solr-params-hash>
-  #
-  # The default request-handler-path is admin/luke
-  # The default params are numTerms=0
-  #
   # Returns a new Mash object.
   def luke opts = {}
     opts[:params] ||= {}
