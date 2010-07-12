@@ -66,7 +66,7 @@ module RSolr::Ext::Request
     # passed back into build_query (recursive)
     def build_query(value, quote_string=false)
       case value
-      when String,Symbol
+      when String,Symbol,Numeric
         quote_string ? quote(value.to_s) : value.to_s
       when Array
         value.collect do |v|
