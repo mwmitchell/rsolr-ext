@@ -12,8 +12,8 @@ describe RSolr::Ext do
 
     it 'should produce results from the #find method' do
       c = client
-      c.should_receive(:request).
-        with('/select', {:rows=>10, :start=>20, :q=>"*:*"}).
+      c.should_receive(:get).
+        with('select', {:params => {:rows=>10, :start=>20, :q=>"*:*"}}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
       response = c.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
       response.should be_a(Mash)
@@ -24,19 +24,19 @@ describe RSolr::Ext do
       expected_response = {'response'=>{'docs' => []}, 'responseHeader' => {}}
       # ok this is hacky... the raw method needs to go into a mixin dude
       def expected_response.raw
-        {:path => '/select'}
+        {:path => 'select'}
       end
-      c.should_receive(:request).
-        with('/select', {:q=>'*:*'}).
+      c.should_receive(:get).
+        with('select', {:params => {:q=>'*:*'}}).
           and_return(expected_response)
-      response = c.find '/select', :q=>'*:*'
-      response.raw[:path].should match(/\/select/)
+      response = c.find 'select', :q=>'*:*'
+      response.raw[:path].should match(/select/)
     end
 
     it 'should be ok' do
       c = client
-      c.should_receive(:request).
-        with('/select', :q=>'*:*').
+      c.should_receive(:get).
+        with('select', {:params => {:q=>'*:*'}}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {'status'=>0}})
       response = c.find :q=>'*:*'
       response.should respond_to(:ok?)
@@ -45,8 +45,8 @@ describe RSolr::Ext do
 
     it 'should call the #luke method' do
       c = client
-      c.should_receive(:request).
-        with('/admin/luke', {"numTerms"=>0}).
+      c.should_receive(:get).
+        with('admin/luke', {"numTerms"=>0}).
           and_return({"fields"=>nil, "index"=>nil, "info" => nil})
       info = c.luke
       info.should be_a(Mash)
@@ -55,9 +55,9 @@ describe RSolr::Ext do
       info.should have_key('info')
     end
 
-    it 'should forwad #ping? calls to the connection' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
+    it 'should forward #ping? calls to the connection' do
+      client.should_receive(:get).
+        with('admin/ping', :wt => :ruby ).
         and_return( :params => { :wt => :ruby },
                     :status_code => 200,
                     :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
@@ -65,11 +65,11 @@ describe RSolr::Ext do
     end
 
     it 'should raise an error if the ping service is not available' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
+      client.should_receive(:get).
+        with('admin/ping', :wt => :ruby ).
         # the first part of the what the message would really be
-        and_raise( RSolr::RequestError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
-        lambda { client.ping? }.should raise_error( RSolr::RequestError )
+        and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
+        lambda { client.ping? }.should raise_error( RuntimeError )
     end
 
   end
@@ -137,7 +137,7 @@ describe RSolr::Ext do
 
     def create_response
       raw_response = eval(mock_query_response)
-      RSolr::Ext::Response::Base.new(raw_response, '/select', raw_response['params'])
+      RSolr::Ext::Response::Base.new(raw_response, 'select', raw_response['params'])
     end
 
     it 'should create a valid response' do
@@ -199,7 +199,7 @@ describe RSolr::Ext do
         item.value + ' - ' + item.hits.to_s
       end.join(', ')
 
-      expected.should == received
+      received.should == expected
 
       r.facets.each do |facet|
         facet.respond_to?(:name).should == true
