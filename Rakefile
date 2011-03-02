@@ -11,7 +11,7 @@ begin
     gem.homepage = "http://github.com/mwmitchell/rsolr-ext"
     gem.authors = ["Matt Mitchell"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "rsolr", ">= 0.12.1"
+    gem.add_dependency "rsolr", ">= 1.0.0"
     
     gem.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'VERSION']
     gem.test_files = ['spec/*', 'Rakefile']
