@@ -12,7 +12,7 @@ describe RSolr::Ext do
 
     it 'should produce results from the #find method' do
       c = client
-      c.should_receive(:get).
+      c.should_receive(:send_and_receive).
         with('select', {:params => {:rows=>10, :start=>20, :q=>"*:*"}}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
       response = c.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
@@ -26,7 +26,7 @@ describe RSolr::Ext do
       def expected_response.raw
         {:path => 'select'}
       end
-      c.should_receive(:get).
+      c.should_receive(:send_and_receive).
         with('select', {:params => {:q=>'*:*'}}).
           and_return(expected_response)
       response = c.find 'select', :q=>'*:*'
@@ -35,7 +35,7 @@ describe RSolr::Ext do
 
     it 'should be ok' do
       c = client
-      c.should_receive(:get).
+      c.should_receive(:send_and_receive).
         with('select', {:params => {:q=>'*:*'}}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {'status'=>0}})
       response = c.find :q=>'*:*'
