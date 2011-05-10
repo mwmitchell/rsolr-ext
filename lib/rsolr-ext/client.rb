@@ -12,12 +12,7 @@ module RSolr::Ext::Client
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
   def find *args
-    # remove the handler arg - the first, if it is a string OR set default
-    path = args.first.is_a?(String) ? args.shift : 'select'
-    # remove the params - the first, if it is a Hash OR set default
-    params = args.first.kind_of?(Hash) ? args.shift : {}
-    # everything that isn't params is opts
-    opts = args.first.kind_of?(Hash) ? args.shift : {}
+    path, params, opts = rsolr_request_arguments_for(*args)
     # send path, map params and send the rest of the args along
     response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
     RSolr::Ext::Response::Base.new(response, path, params)
@@ -26,7 +21,8 @@ module RSolr::Ext::Client
   # A simple helper method to return an integer value for the count of
   # resulting rows for the specified query.
   def count *args
-    find(*args).total
+    path, params, opts = rsolr_request_arguments_for(*args)
+    find(path, params.merge(:rows => 0), opts).total
   end
   
   # TWO modes of arguments:
@@ -68,4 +64,18 @@ module RSolr::Ext::Client
     ping['status'] == 'OK'
   end
   
+  private
+
+    # Helper method to return the parameters needed for requesting
+    # from Solr.
+    def rsolr_request_arguments_for *args
+      [].tap do |arr|
+        # remove the handler arg - the first, if it is a string OR set default
+        arr << (args.first.is_a?(String) ? args.shift : 'select')
+        # remove the params - the first, if it is a Hash OR set default
+        arr << (args.first.kind_of?(Hash) ? args.shift : {})
+        # everything that isn't params is opts
+        arr << (args.first.kind_of?(Hash) ? args.shift : {})
+      end
+    end
 end

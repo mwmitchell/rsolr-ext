@@ -90,14 +90,45 @@ describe RSolr::Ext do
       it "should return the count of resulting rows" do
         c = client
         c.should_receive(:send_and_receive).
-          with('select', { :params => { :q => '*:*' }}).
+          with('select', { :params => { :q => '*:*', :rows => 0 }}).
             and_return(eval(mock_query_response))
 
         response = c.count :q => '*:*'
         response.should == 26
       end
+
+      it "should not return any row data" do
+        c = client
+        c.should_receive(:send_and_receive).
+          with('select', { :params => { :q => '*:*', :rows => 0 }}).
+            and_return(eval(mock_query_response_for_count))
+
+        c.count :q => '*:*'
+      end
+
     end
 
+    describe "#rsolr_request_arguments_for" do
+      it "should split out the method" do
+        c = client
+        c.send(:rsolr_request_arguments_for, 'foo', {}, {}).first.should == 'foo'
+      end
+
+      it "should use the default method when not given" do
+        c = client
+        c.send(:rsolr_request_arguments_for, {}, {})[0].should == 'select'
+      end
+
+      it "should split out the params" do
+        c = client
+        c.send(:rsolr_request_arguments_for, { :q => "foo" }, {})[1].should == { :q => "foo" }
+      end
+
+      it "should split out the opts" do
+        c = client
+        c.send(:rsolr_request_arguments_for, {}, {:method => :foo})[2].should == { :method => :foo }
+      end
+    end
   end
 
   context 'requests' do
