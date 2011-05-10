@@ -16,8 +16,10 @@ module RSolr::Ext::Client
     path = args.first.is_a?(String) ? args.shift : 'select'
     # remove the params - the first, if it is a Hash OR set default
     params = args.first.kind_of?(Hash) ? args.shift : {}
+    # everything that isn't params is opts
+    opts = args.first.kind_of?(Hash) ? args.shift : {}
     # send path, map params and send the rest of the args along
-    response = self.send_and_receive path, { :params => RSolr::Ext::Request.map(params) }
+    response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
     RSolr::Ext::Response::Base.new(response, path, params)
   end
   

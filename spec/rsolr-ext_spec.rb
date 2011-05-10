@@ -33,6 +33,20 @@ describe RSolr::Ext do
       response.raw[:path].should match(/select/)
     end
 
+    it "should pass on the opts hash to the send_and_receive method" do
+      c = client
+      expected_response = { 'response' => { 'docs' => [] }, 'responseHeader' => {}}
+      # ok this is hacky... the raw method needs to go into a mixin dude
+      def expected_response.raw
+        {:path => 'select'}
+      end
+
+      c.should_receive(:send_and_receive).
+        with('select', {:params => { :q => '*:*' }, :method => :post}).
+          and_return(expected_response)
+      response = c.find 'select', { :q => '*:*'}, { :method => :post }
+    end
+
     it 'should be ok' do
       c = client
       c.should_receive(:send_and_receive).
