@@ -161,7 +161,7 @@ describe RSolr::Ext do
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
-      r.docs.previous_page.should == 1
+      r.docs.previous_page.should be_nil
       r.docs.next_page.should == 2
       #
       r.should be_a(RSolr::Ext::Response::Docs)
