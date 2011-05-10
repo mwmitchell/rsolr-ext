@@ -8,11 +8,13 @@ module RSolr::Ext::Response::Docs
   end
   
   def docs
-    per_page = [self.rows, 1].max
-    page = (self.start / per_page).ceil + 1
+    @docs ||= begin
+      per_page = [self.rows, 1].max
+      page = (self.start / per_page).ceil + 1
 
-    WillPaginate::Collection.create(page, per_page, self.total) do |pager|
-      pager.replace(response['docs'])
+      WillPaginate::Collection.create(page, per_page, self.total) do |pager|
+        pager.replace(response['docs'])
+      end
     end
   end
   
