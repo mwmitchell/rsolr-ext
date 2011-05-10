@@ -1,5 +1,5 @@
 module RSolr::Ext::Client
-  
+
   # TWO modes of arguments:
   #
   # <request-handler-path>, <solr-params-hash>
@@ -21,6 +21,12 @@ module RSolr::Ext::Client
     # send path, map params and send the rest of the args along
     response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
     RSolr::Ext::Response::Base.new(response, path, params)
+  end
+
+  # A simple helper method to return an integer value for the count of
+  # resulting rows for the specified query.
+  def count *args
+    find(*args).total
   end
   
   # TWO modes of arguments:

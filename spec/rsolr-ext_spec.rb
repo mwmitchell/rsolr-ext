@@ -86,6 +86,18 @@ describe RSolr::Ext do
         lambda { client.ping? }.should raise_error( RuntimeError )
     end
 
+    describe "#count" do
+      it "should return the count of resulting rows" do
+        c = client
+        c.should_receive(:send_and_receive).
+          with('select', { :params => { :q => '*:*' }}).
+            and_return(eval(mock_query_response))
+
+        response = c.count :q => '*:*'
+        response.should == 26
+      end
+    end
+
   end
 
   context 'requests' do

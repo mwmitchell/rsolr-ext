@@ -52,10 +52,6 @@ module RSolr::Ext::Response
       response[:numFound].to_s.to_i
     end
     
-    def total
-      response[:numFound].to_s.to_i
-    end
-    
     def start
       response[:start].to_s.to_i
     end
