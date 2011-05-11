@@ -177,6 +177,8 @@ describe RSolr::Ext do
       r.params[:echoParams].should == 'EXPLICIT'
       r.docs.previous_page.should be_nil
       r.docs.next_page.should == 2
+      r.docs.has_previous?.should == false
+      r.docs.has_next?.should == true
       #
       r.should be_a(RSolr::Ext::Response::Docs)
       r.should be_a(RSolr::Ext::Response::Facets)
