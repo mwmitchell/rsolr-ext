@@ -62,6 +62,8 @@ module RSolr::Ext::Client
   #
   def ping?
     ping['status'] == 'OK'
+  rescue Exception => exception
+    raise_connection_exceptions ? raise(exception) : false
   end
   
   private

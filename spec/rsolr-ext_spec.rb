@@ -86,6 +86,16 @@ describe RSolr::Ext do
         lambda { client.ping? }.should raise_error( RuntimeError )
     end
 
+    it "should not raise an error when the client is supressing errors" do
+      client.raise_connection_exceptions = false
+      client.should_receive(:get).
+        with('admin/ping', :wt => :ruby ).
+        # the first part of the what the message would really be
+        and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
+
+      client.ping?.should be_false
+    end
+
     describe "#count" do
       it "should return the count of resulting rows" do
         c = client
