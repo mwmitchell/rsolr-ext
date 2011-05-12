@@ -86,6 +86,59 @@ describe RSolr::Ext do
         lambda { client.ping? }.should raise_error( RuntimeError )
     end
 
+    it "should not raise an error when the client is supressing errors" do
+      client.raise_connection_exceptions = false
+      client.should_receive(:get).
+        with('admin/ping', :wt => :ruby ).
+        # the first part of the what the message would really be
+        and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
+
+      client.ping?.should be_false
+    end
+
+    describe "#count" do
+      it "should return the count of resulting rows" do
+        c = client
+        c.should_receive(:send_and_receive).
+          with('select', { :params => { :q => '*:*', :rows => 0 }}).
+            and_return(eval(mock_query_response))
+
+        response = c.count :q => '*:*'
+        response.should == 26
+      end
+
+      it "should not return any row data" do
+        c = client
+        c.should_receive(:send_and_receive).
+          with('select', { :params => { :q => '*:*', :rows => 0 }}).
+            and_return(eval(mock_query_response_for_count))
+
+        c.count :q => '*:*'
+      end
+
+    end
+
+    describe "#rsolr_request_arguments_for" do
+      it "should split out the method" do
+        c = client
+        c.send(:rsolr_request_arguments_for, 'foo', {}, {}).first.should == 'foo'
+      end
+
+      it "should use the default method when not given" do
+        c = client
+        c.send(:rsolr_request_arguments_for, {}, {})[0].should == 'select'
+      end
+
+      it "should split out the params" do
+        c = client
+        c.send(:rsolr_request_arguments_for, { :q => "foo" }, {})[1].should == { :q => "foo" }
+      end
+
+      it "should split out the opts" do
+        c = client
+        c.send(:rsolr_request_arguments_for, {}, {:method => :foo})[2].should == { :method => :foo }
+      end
+    end
   end
 
   context 'requests' do
