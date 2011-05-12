@@ -60,7 +60,7 @@ describe RSolr::Ext do
     it 'should call the #luke method' do
       c = client
       c.should_receive(:get).
-        with('admin/luke', {"numTerms"=>0}).
+        with('admin/luke', {"numTerms"=>0}, {}).
           and_return({"fields"=>nil, "index"=>nil, "info" => nil})
       info = c.luke
       info.should be_a(Mash)
@@ -71,8 +71,8 @@ describe RSolr::Ext do
 
     it 'should forward #ping? calls to the connection' do
       client.should_receive(:get).
-        with('admin/ping', :wt => :ruby ).
-        and_return( :params => { :wt => :ruby },
+        with('admin/ping', {}, {} ).
+        and_return( :params => {},
                     :status_code => 200,
                     :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
       client.ping?
@@ -80,20 +80,10 @@ describe RSolr::Ext do
 
     it 'should raise an error if the ping service is not available' do
       client.should_receive(:get).
-        with('admin/ping', :wt => :ruby ).
+        with('admin/ping', {}, {} ).
         # the first part of the what the message would really be
         and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
         lambda { client.ping? }.should raise_error( RuntimeError )
-    end
-
-    it "should not raise an error when the client is supressing errors" do
-      client.raise_connection_exceptions = false
-      client.should_receive(:get).
-        with('admin/ping', :wt => :ruby ).
-        # the first part of the what the message would really be
-        and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
-
-      client.ping?.should be_false
     end
 
     describe "#count" do
@@ -124,16 +114,16 @@ describe RSolr::Ext do
         c.send(:rsolr_request_arguments_for, 'foo', {}, {}).first.should == 'foo'
       end
 
-      it "should use the default method when not given" do
+      it "should return a nil path when not given" do
         c = client
-        c.send(:rsolr_request_arguments_for, {}, {})[0].should == 'select'
+        c.send(:rsolr_request_arguments_for, {}, {})[0].should == nil
       end
-
+      
       it "should split out the params" do
         c = client
         c.send(:rsolr_request_arguments_for, { :q => "foo" }, {})[1].should == { :q => "foo" }
       end
-
+      
       it "should split out the opts" do
         c = client
         c.send(:rsolr_request_arguments_for, {}, {:method => :foo})[2].should == { :method => :foo }
@@ -228,7 +218,7 @@ describe RSolr::Ext do
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
-      r.docs.previous_page.should be_nil
+      r.docs.previous_page.should == 1
       r.docs.next_page.should == 2
       #
       r.should be_a(RSolr::Ext::Response::Docs)

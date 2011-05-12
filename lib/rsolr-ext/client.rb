@@ -6,22 +6,24 @@ module RSolr::Ext::Client
   # OR
   # <solr-params-hash>
   #
-  # The default request-handler-path is select
+  # The default request-handler-path is "select"
   # 
   # If a hash is used for solr params, all of the normal RSolr::Ext::Request
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
   def find *args
     path, params, opts = rsolr_request_arguments_for(*args)
+    path ||= "select"
     # send path, map params and send the rest of the args along
     response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
     RSolr::Ext::Response::Base.new(response, path, params)
   end
-
+  
   # A simple helper method to return an integer value for the count of
   # resulting rows for the specified query.
   def count *args
     path, params, opts = rsolr_request_arguments_for(*args)
+    path ||= "select"
     find(path, params.merge(:rows => 0), opts).total
   end
   
@@ -36,17 +38,17 @@ module RSolr::Ext::Client
   #
   # Returns a new Mash object.
   def luke *args
-    path = args.first.is_a?(String) ? args.shift : 'admin/luke'
-    params = args.pop || {}
+    path, params, opts = rsolr_request_arguments_for(*args)
+    path ||= "admin/luke"
     params['numTerms'] ||= 0
-    self.get(path, params).to_mash
+    self.get(path, params, opts).to_mash
   end
   
   # sends request to /admin/ping
   def ping *args
-    path = args.first.is_a?(String) ? args.shift : 'admin/ping'
-    params = args.pop || {:wt => :ruby}
-    self.get(path, params).to_mash
+    path, params, opts = rsolr_request_arguments_for(*args)
+    path ||= "admin/ping"
+    self.get(path, params, opts).to_mash
   end
   
   # Ping the server and make sure it is alright
@@ -62,22 +64,21 @@ module RSolr::Ext::Client
   #
   def ping?
     ping['status'] == 'OK'
-  rescue Exception => exception
-    raise_connection_exceptions ? raise(exception) : false
   end
   
   private
 
-    # Helper method to return the parameters needed for requesting
-    # from Solr.
-    def rsolr_request_arguments_for *args
-      [].tap do |arr|
-        # remove the handler arg - the first, if it is a string OR set default
-        arr << (args.first.is_a?(String) ? args.shift : 'select')
-        # remove the params - the first, if it is a Hash OR set default
-        arr << (args.first.kind_of?(Hash) ? args.shift : {})
-        # everything that isn't params is opts
-        arr << (args.first.kind_of?(Hash) ? args.shift : {})
-      end
+  # Helper method to return the parameters needed for requesting
+  # from Solr.
+  def rsolr_request_arguments_for *args
+    [].tap do |arr|
+      # remove the handler arg - the first, if it is a string OR set default
+      arr << (args.first.is_a?(String) ? args.shift : nil)
+      # remove the params - the first, if it is a Hash OR set default
+      arr << (args.first.kind_of?(Hash) ? args.shift : {})
+      # everything that isn't params is opts
+      arr << (args.first.kind_of?(Hash) ? args.shift : {})
     end
+  end
+  
 end

@@ -1,5 +1,3 @@
-# add this directory to the load path if it hasn't already been added
-
 require File.join(File.dirname(__FILE__), 'mash') unless defined?(Mash)
 
 unless Hash.respond_to?(:to_mash)

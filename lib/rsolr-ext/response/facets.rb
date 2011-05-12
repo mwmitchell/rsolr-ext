@@ -25,8 +25,8 @@ module RSolr::Ext::Response::Facets
     @facets ||= (
       facet_fields.map do |(facet_field_name,values_and_hits)|
         items = []
-        (values_and_hits.size/2).times do |index|
-          items << FacetItem.new(values_and_hits[index*2], values_and_hits[index*2+1])
+        values_and_hits.each_slice(2) do |k,v|
+          items << FacetItem.new(k, v)
         end
         FacetField.new(facet_field_name, items)
       end
