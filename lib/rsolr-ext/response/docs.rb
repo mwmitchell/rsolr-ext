@@ -1,5 +1,30 @@
 module RSolr::Ext::Response::Docs
   
+  # NOTE: This might move/change in the next major release of RSolr::Ext
+  module WillPaginateExt
+    class MissingLibError < RuntimeError
+      def to_s; "WillPaginate is required" end
+    end
+    def will_paginate
+      WillPaginate::Collection.create(self.current_page, self.per_page, self.total) do |pager|
+        pager.replace(self)
+      end
+    rescue NameError
+      raise MissingLibError.new
+    end
+  end
+  
+  def self.extended(base)
+    d = base['response']['docs']
+    # TODO: could we do this lazily (Enumerable etc.)
+    d.each{|doc| doc.extend RSolr::Ext::Doc }
+    d.extend Pageable
+    d.per_page = [base.rows, 1].max
+    d.start = base.start
+    d.total = base.total
+    d.extend WillPaginateExt
+  end
+  
   module Pageable
     
     attr_accessor :start, :per_page, :total
@@ -40,28 +65,11 @@ module RSolr::Ext::Response::Docs
     
   end
   
-  def self.extended(base)
-    d = base['response']['docs']
-    d.each{|doc| doc.extend RSolr::Ext::Doc }
-    d.extend Pageable
-    d.per_page = base.rows
-    d.start = base.start
-    d.total = base.total
-  end
-  
-  # def docs
-  #   @docs ||= begin
-  #     per_page = [self.rows, 1].max
-  #     page = (self.start / per_page).ceil + 1
-  # 
-  #     WillPaginate::Collection.create(page, per_page, self.total) do |pager|
-  #       pager.replace(response['docs'])
-  #     end
-  #   end
-  # end
-  
   def docs
-    response['docs']
+    @docs ||= begin
+      warn "DEPRECATION WARNING: The custom pagination codebase in RSolr::Ext will no longer be supported. Use response.docs.will_paginate instead."
+      response['docs']
+    end
   end
   
 end
