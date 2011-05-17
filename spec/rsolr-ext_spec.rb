@@ -220,6 +220,8 @@ describe RSolr::Ext do
       r.params[:echoParams].should == 'EXPLICIT'
       r.docs.previous_page.should == 1
       r.docs.next_page.should == 2
+      r.docs.has_previous?.should == false
+      r.docs.has_next?.should == true
       #
       r.should be_a(RSolr::Ext::Response::Docs)
       r.should be_a(RSolr::Ext::Response::Facets)
@@ -326,8 +328,34 @@ describe RSolr::Ext do
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
       r.spelling.collation.should == 'dell ultrasharp'
     end
+    
+    ###############################
+    
+    context "docs.will_paginate" do
+      
+      it 'will raise a RSolr::Ext::Response::Docs::WillPaginateExt::MissingLibError if WillPaginate is not defined' do
+        r = create_response
+        r.docs.should respond_to(:will_paginate)
+        lambda{
+          r.docs.will_paginate
+        }.should(raise_error(
+          RSolr::Ext::Response::Docs::WillPaginateExt::MissingLibError,
+          "WillPaginate is required"))
+      end
+      
+      it 'will work, and return a WillPaginate::Collectionified doc array' do
+        # this is one funky part about dynamic dependencies...
+        require "will_paginate"
+        r = create_response
+        original_docs = r.docs
+        r.docs.should_not be_a(WillPaginate::Collection)
+        r.docs.should respond_to(:will_paginate)
+        r.docs.will_paginate.should be_a(WillPaginate::Collection)
+        r.docs.should be(original_docs)
+      end
+      
+    end
 
   end
 
 end
-
