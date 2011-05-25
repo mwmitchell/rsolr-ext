@@ -8,6 +8,8 @@ unless Hash.respond_to?(:to_mash)
   end
 end
 
+$: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
+
 require 'rubygems'
 require 'rsolr'
 
@@ -30,8 +32,6 @@ module RSolr::Ext
     include RSolr::Ext::Client
   end
   
-  # this is for backward compatibility: RSolr::Ext.connect
-  # recommended way is to just use RSolr.connect
   def self.connect *args, &blk
     RSolr.connect *args, &blk
   end
