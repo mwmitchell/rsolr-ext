@@ -41,14 +41,14 @@ module RSolr::Ext::Client
     path, params, opts = rsolr_request_arguments_for(*args)
     path ||= "admin/luke"
     params['numTerms'] ||= 0
-    self.get(path, params, opts).to_mash
+    self.get(path, opts.merge(:params => params)).to_mash
   end
   
   # sends request to /admin/ping
   def ping *args
     path, params, opts = rsolr_request_arguments_for(*args)
     path ||= "admin/ping"
-    self.get(path, params, opts).to_mash
+    self.get(path, opts.merge(:params => params)).to_mash
   end
   
   # Ping the server and make sure it is alright

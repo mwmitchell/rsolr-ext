@@ -60,7 +60,7 @@ describe RSolr::Ext do
     it 'should call the #luke method' do
       c = client
       c.should_receive(:get).
-        with('admin/luke', {"numTerms"=>0}, {}).
+        with('admin/luke', :params => {"numTerms"=>0}).
           and_return({"fields"=>nil, "index"=>nil, "info" => nil})
       info = c.luke
       info.should be_a(Mash)
@@ -71,7 +71,7 @@ describe RSolr::Ext do
 
     it 'should forward #ping? calls to the connection' do
       client.should_receive(:get).
-        with('admin/ping', {}, {} ).
+        with('admin/ping', :params => {} ).
         and_return( :params => {},
                     :status_code => 200,
                     :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
@@ -80,7 +80,7 @@ describe RSolr::Ext do
 
     it 'should raise an error if the ping service is not available' do
       client.should_receive(:get).
-        with('admin/ping', {}, {} ).
+        with('admin/ping', {:params => {}} ).
         # the first part of the what the message would really be
         and_raise( RuntimeError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
         lambda { client.ping? }.should raise_error( RuntimeError )
