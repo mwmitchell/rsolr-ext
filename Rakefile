@@ -9,9 +9,9 @@ begin
     gem.description = %Q{A query/response extension lib for RSolr}
     gem.email = "goodieboy@gmail.com"
     gem.homepage = "http://github.com/mwmitchell/rsolr-ext"
-    gem.authors = ["Matt Mitchell"]
+    gem.authors = ["Matt Mitchell", "James Davidson", "Chris Beer", "Jason Ronallo", "Eric Lindvall", "Andreas Kemkes"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "rsolr", ">= 1.0.0"
+    gem.add_dependency "rsolr", ">= 1.0.1"
     
     gem.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'VERSION']
     gem.test_files = ['spec/*', 'Rakefile']
