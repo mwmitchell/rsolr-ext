@@ -29,6 +29,7 @@ module RSolr::Ext
   
   # modify the RSolr::Client (provides #find and #luke methods)
   RSolr::Client.class_eval do
+    warn "DEPRECATION WARNING: Future versions of RSolr::Ext will require initialization via RSolr::Ext.connect."
     include RSolr::Ext::Client
   end
   

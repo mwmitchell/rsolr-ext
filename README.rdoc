@@ -11,7 +11,7 @@ A set of helper methods/modules to assist in building Solr queries and handling 
 ==Requests
 To use the RSolr::Ext connection instead of the normal RSolr connection just require 'rsolr-ext':
   require 'rsolr-ext'
-  solr = RSolr.connect
+  solr = RSolr::Ext.connect
 
 RSolr::Ext adds a #find and a #luke method to the connection object.
 
@@ -73,7 +73,7 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
 
 ==Request Example
   require 'rsolr-ext'
-  solr = RSolr.connect
+  solr = RSolr::Ext.connect
   solr_params = {
     :page=>2,
     :per_page=>10,
@@ -84,13 +84,13 @@ The #find method listens for certain keys. All other keys are ignored, allowing 
     :facets=>{:fields=>['cat', 'blah']},
     :echoParams => 'EXPLICIT'
   }
-  response = rsolr.find solr_params
+  response = rsolr.find solr_params, :method => :post
 
 ==Responses
 RSolr::Ext decorates the normal output hash from RSolr and adds some helpful methods.
   
   require 'rsolr-ext'
-  solr = RSolr.connect
+  solr = RSolr::Ext.connect
   
   response = solr.find :q=>'*:*'
   
@@ -109,8 +109,8 @@ RSolr::Ext decorates the normal output hash from RSolr and adds some helpful met
 You can access values in the response hash using symbols or strings.
 
 ===Documents/Pagination
-If you wanna paginate, just throw the collection into the WillPaginate view helper.
-  <%= will_paginate response.docs %>
+If you wanna paginate the documents:
+  <%= will_paginate response.docs.will_paginate %>
 
 ==The "Model" Module
 You can create your own <read-only> "models" using RSolr::Ext::Model
