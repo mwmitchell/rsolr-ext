@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr-ext}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell", "James Davidson", "Chris Beer", "Jason Ronallo", "Eric Lindvall", "Andreas Kemkes"]
-  s.date = %q{2011-05-26}
+  s.date = %q{2011-06-08}
   s.description = %q{A query/response extension lib for RSolr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -33,14 +33,9 @@ Gem::Specification.new do |s|
   ]
   s.homepage = %q{http://github.com/mwmitchell/rsolr-ext}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.0}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{A query/response extension lib for RSolr}
-  s.test_files = [
-    "Rakefile",
-    "spec/rsolr-ext_spec.rb",
-    "spec/spec.opts",
-    "spec/spec_helper.rb"
-  ]
+  s.test_files = ["spec/*", "Rakefile"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
