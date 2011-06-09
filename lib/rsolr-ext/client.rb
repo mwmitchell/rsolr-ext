@@ -15,7 +15,12 @@ module RSolr::Ext::Client
     path, params, opts = rsolr_request_arguments_for(*args)
     path ||= "select"
     # send path, map params and send the rest of the args along
-    response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
+    if params[:page] || params[:per_page]
+      response = self.paginate params[:page], params[:per_page], path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
+    else
+      response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
+    end
+    
     RSolr::Ext::Response::Base.new(response, path, params)
   end
   

@@ -12,8 +12,8 @@ describe RSolr::Ext do
 
     it 'should produce results from the #find method' do
       c = client
-      c.should_receive(:send_and_receive).
-        with('select', {:params => {:rows=>10, :start=>20, :q=>"*:*"}}).
+      c.should_receive(:paginate).
+        with(3, 10, 'select', {:params => {:rows=>10, :start=>20, :q=>"*:*"}}).
           and_return({'response'=>{'docs' => []}, 'responseHeader' => {}})
       response = c.find :page=>3, :per_page=>10, :q=>'*:*'#, :page=>1, :per_page=>10
       response.should be_a(Mash)
@@ -218,6 +218,7 @@ describe RSolr::Ext do
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
+      
       r.docs.previous_page.should == 1
       r.docs.next_page.should == 2
       r.docs.has_previous?.should == false
