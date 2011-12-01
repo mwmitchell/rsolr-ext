@@ -1,37 +1,15 @@
 require 'rubygems'
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "rsolr-ext"
-    gem.summary = %Q{A query/response extension lib for RSolr}
-    gem.description = %Q{A query/response extension lib for RSolr}
-    gem.email = "goodieboy@gmail.com"
-    gem.homepage = "http://github.com/mwmitchell/rsolr-ext"
-    gem.authors = ["Matt Mitchell", "James Davidson", "Chris Beer", "Jason Ronallo", "Eric Lindvall", "Andreas Kemkes"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "rsolr", ">= 1.0.2"
-    
-    gem.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'VERSION']
-    gem.test_files = Dir['spec/*'] + FileList['Rakefile']
-    
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  # Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern += FileList['spec/*_spec.rb']
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-end
-
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
+RSpec::Core::RakeTask.new(:rcov) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern += FileList['spec/*_spec.rb']
   spec.rcov = true
 end
 

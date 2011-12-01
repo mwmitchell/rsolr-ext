@@ -37,19 +37,10 @@ Gem::Specification.new do |s|
   s.summary = %q{A query/response extension lib for RSolr}
   s.test_files = ["spec/*", "Rakefile"]
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_runtime_dependency(%q<rsolr>, [">= 1.0.1"])
-    else
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_dependency(%q<rsolr>, [">= 1.0.1"])
-    end
-  else
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
-    s.add_dependency(%q<rsolr>, [">= 1.0.1"])
-  end
+  s.add_dependency 'rsolr', ">= 1.0.1"
+  s.add_development_dependency 'rake', '~> 0.9.2'
+  s.add_development_dependency 'rdoc', '~> 3.9.4'
+  s.add_development_dependency 'rspec', '~> 2.6.0'
+  s.add_development_dependency 'rcov'
 end
 
