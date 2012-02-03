@@ -77,10 +77,8 @@ module RSolr::Ext::Response::TermVectors
     
     # Dig up the unique key field name
     unique_field_name = nil
-    base['termVectors'].each_with_index do |x, i|
-      if x == 'uniqueKeyFieldName'
-        unique_field_name = base['termVectors'][i + 1]
-      end
+    if base['termVectors'][-2] == 'uniqueKeyFieldName'
+      unique_field_name = base['termVectors'][-1]
     end
     
     # Parse all of the term vector arrays
@@ -95,8 +93,12 @@ module RSolr::Ext::Response::TermVectors
     #         'positions', ['position', 50],
     #         'df', 1,
     #         'tf-idf', 0.234],
-    #       'term2', ... ], ... ], ... ]
-    (0...base['termVectors'].length).step(2) do |i|
+    #       'term2', ... ], ... ],
+    #   'uniqueKeyFieldName', '(field name)' ]
+    #
+    # The last two items in this array are 'uniqueKeyFieldName' 
+    # and the unique key, which we queried above.
+    (0...(base['termVectors'].length - 2)).step(2) do |i|
       document_array = base['termVectors'][i + 1]
       unique_key = document_array[1]
       
