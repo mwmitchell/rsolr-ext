@@ -28,6 +28,10 @@ RSpec.configure do |config|
   def mock_response_with_spellcheck_collation
     %|{'responseHeader'=>{'status'=>0,'QTime'=>3,'params'=>{'spellspellcheck.build'=>'true','spellcheck'=>'true','q'=>'hell','spellcheck.q'=>'hell ultrashar','wt'=>'ruby','spellcheck.collate'=>'true'}},'response'=>{'numFound'=>0,'start'=>0,'docs'=>[]},'spellcheck'=>{'suggestions'=>['hell',{'numFound'=>1,'startOffset'=>0,'endOffset'=>4,'suggestion'=>['dell']},'ultrashar',{'numFound'=>1,'startOffset'=>5,'endOffset'=>14,'suggestion'=>['ultrasharp']},'collation','dell ultrasharp']}}|
   end
-
+  
+  def mock_response_with_term_vectors
+    %|{'responseHeader'=>{'status'=>0,'QTime'=>5,'params'=>{'tv.all'=>'true','wt'=>'ruby','version'=>'2.2','rows'=>'1','q'=>'shasum:00972c5123877961056b21aea4177d0dc69c7318','qt'=>'fulltext'}},'response'=>{'numFound'=>1,'start'=>0,'docs'=>[{'shasum'=>'00972c5123877961056b21aea4177d0dc69c7318','doi'=>'10.1111/j.1439-0310.2008.01576.x','fulltext'=>'Ethology How Reliable are the Methods for Estimating Repertoire Size? Carlos A. Botero*,f,$, Andrew E. Mudgef, Amanda M. Koltz, Wesley M. Hochachkaf & Sandra L. Vehrencampf,- * Center for Ecological and Evolutionary Studies, University of Groningen, Groningen, The Netherlands f Cornell Laboratory of Ornithology, Ithaca, NY, USA J Instituto de Investigation en Recursos Biologicos Alexander von Humboldt, Bogota, Colombia  Department of Ecology and Evolutionary Biology, Cornell University, Ithaca, NY, USA - Department of Neurobiology and Behavior, Cornell University, Ithaca, NY, USA'}]},'termVectors'=>['doc-4',['uniqueKey','00972c5123877961056b21aea4177d0dc69c7318','fulltext',['cornell',['tf',3,'offsets',['start',281,'end',288,'start',475,'end',482,'start',554,'end',561],'positions',['position',39,'position',64,'position',74],'df',2,'tf-idf',1.5],'vehrencampf',['tf',1,'offsets',['start',163,'end',174],'positions',['position',25],'df',1,'tf-idf',1.0]]],'uniqueKeyFieldName','shasum']}|
+  end
+  
 end
 

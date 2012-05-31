@@ -2,6 +2,7 @@ module RSolr::Ext::Response
   
   autoload :Docs, 'rsolr-ext/response/docs'
   autoload :Facets, 'rsolr-ext/response/facets'
+  autoload :TermVectors, 'rsolr-ext/response/term_vectors'
   autoload :Spelling, 'rsolr-ext/response/spelling'
   
   class Base < Mash
@@ -16,6 +17,7 @@ module RSolr::Ext::Response
       extend Response
       extend Docs
       extend Facets
+      extend TermVectors
       extend Spelling
     end
     

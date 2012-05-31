@@ -108,7 +108,26 @@ RSolr::Ext decorates the normal output hash from RSolr and adds some helpful met
 
 You can access values in the response hash using symbols or strings.
 
-===Documents/Pagination
+===Term Vectors
+Each document will include (if available) the {term vectors}[http://wiki.apache.org/solr/TermVectorComponent] from the Solr query.
+
+  doc = response.docs[0]
+  doc.term_vectors[:field]["word"]
+  doc.term_vectors[:field]["word"][:tf] = Integer
+  doc.term_vectors[:field]["word"][:offsets] = Array<Range>
+  doc.term_vectors[:field]["word"][:offsets][0] = Range
+  # ...
+  doc.term_vectors[:field]["word"][:positions] = Array<Integer>
+  doc.term_vectors[:field]["word"][:positions][0] = Integer
+  # ...
+  doc.term_vectors[:field]["word"][:df] = Float
+  doc.term_vectors[:field]["word"][:tfidf] = Float
+  doc.term_vectors[:field]["otherword"]
+  # ...
+  doc.term_vectors[:other_field]
+  # ...
+
+===Pagination
 If you wanna paginate the documents:
   <%= will_paginate response.docs.will_paginate %>
 

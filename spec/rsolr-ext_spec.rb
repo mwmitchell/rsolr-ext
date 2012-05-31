@@ -329,6 +329,19 @@ describe RSolr::Ext do
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
       r.spelling.collation.should == 'dell ultrasharp'
     end
+    
+    it 'should parse the term vectors' do
+      raw_response = eval(mock_response_with_term_vectors)
+      r = RSolr::Ext::Response::Base.new(raw_response, '', {})
+      
+      r.docs[0].term_vectors[:fulltext]['cornell'][:tf].should == 3
+      r.docs[0].term_vectors[:fulltext]['vehrencampf'][:df].should == 1
+      r.docs[0].term_vectors[:fulltext]['cornell'][:offsets].should have(3).items
+      r.docs[0].term_vectors[:fulltext]['cornell'][:offsets][1].should == (475...482)
+      r.docs[0].term_vectors[:fulltext]['vehrencampf'][:positions].should have(1).items
+      r.docs[0].term_vectors[:fulltext]['vehrencampf'][:positions][0].should == 25
+      r.docs[0].term_vectors[:fulltext]['cornell'][:tfidf].should == 1.5
+    end
 
   end
 
