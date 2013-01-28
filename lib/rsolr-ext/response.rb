@@ -24,7 +24,7 @@ module RSolr::Ext::Response
     end
     
     def rows
-      params[:rows].to_i
+      params[:rows].first.to_i
     end
     
     def params
