@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 
-require 'rsolr-ext'
+#require 'rsolr-ext'
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr-ext}
   s.version = RSolr::Ext.version
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Matt Mitchell", "James Davidson", "Chris Beer", "Jason Ronallo", "Eric Lindvall", "Andreas Kemkes"]
+  s.authors = ["Matt Mitchell", "James Davidson", "Chris Beer", "Jason Ronallo", "Eric Lindvall", "Andreas Kemkes", "Ivan Kourza"]
   s.date = %q{2011-06-08}
   s.description = %q{A query/response extension lib for RSolr}
   s.email = %q{goodieboy@gmail.com}
