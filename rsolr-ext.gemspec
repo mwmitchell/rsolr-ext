@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 
-#require 'rsolr-ext'
+require 'rsolr-ext'
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr-ext}
