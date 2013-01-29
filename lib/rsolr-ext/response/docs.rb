@@ -22,6 +22,10 @@ module RSolr::Ext::Response::Docs
       @current_page ||= (start / per_page_normalized).ceil + 1
     end
     
+    def limit_value
+      per_page
+    end
+    
     # Calcuates the total pages from 'numFound' and 'rows'
     # WillPaginate hook
     def total_pages
