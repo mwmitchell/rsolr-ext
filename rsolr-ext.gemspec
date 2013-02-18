@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{A query/response extension lib for RSolr}
   s.email = %q{goodieboy@gmail.com}
   s.homepage = %q{http://github.com/mwmitchell/rsolr-ext}
+  s.license = "apache2"
   s.summary = %q{A query/response extension lib for RSolr}
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec}/*`.split("\n")
