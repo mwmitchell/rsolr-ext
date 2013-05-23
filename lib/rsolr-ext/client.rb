@@ -7,7 +7,7 @@ module RSolr::Ext::Client
   # <solr-params-hash>
   #
   # The default request-handler-path is "select"
-  # 
+  #
   # If a hash is used for solr params, all of the normal RSolr::Ext::Request
   # mappings are available (everything else gets passed to solr).
   # Returns a new RSolr::Ext::Response::Base object.
@@ -20,10 +20,10 @@ module RSolr::Ext::Client
     else
       response = self.send_and_receive path, opts.merge({ :params => RSolr::Ext::Request.map(params) })
     end
-    
+
     RSolr::Ext::Response::Base.new(response, path, params)
   end
-  
+
   # A simple helper method to return an integer value for the count of
   # resulting rows for the specified query.
   def count *args
@@ -31,7 +31,7 @@ module RSolr::Ext::Client
     path ||= "select"
     find(path, params.merge(:rows => 0), opts).total
   end
-  
+
   # TWO modes of arguments:
   #
   # <request-handler-path>, <solr-params-hash>
@@ -48,14 +48,14 @@ module RSolr::Ext::Client
     params['numTerms'] ||= 0
     self.get(path, opts.merge(:params => params)).to_mash
   end
-  
+
   # sends request to /admin/ping
   def ping *args
     path, params, opts = rsolr_request_arguments_for(*args)
     path ||= "admin/ping"
     self.get(path, opts.merge(:params => params)).to_mash
   end
-  
+
   # Ping the server and make sure it is alright
   #   solr.ping?
   #
@@ -70,7 +70,7 @@ module RSolr::Ext::Client
   def ping?
     ping['status'] == 'OK'
   end
-  
+
   private
 
   # Helper method to return the parameters needed for requesting
@@ -85,5 +85,5 @@ module RSolr::Ext::Client
       arr << (args.first.kind_of?(Hash) ? args.shift : {})
     end
   end
-  
+
 end
