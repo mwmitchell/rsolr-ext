@@ -40,7 +40,7 @@ module RSolr::Ext::Request
         output['facet.field'] = append_to_param output['facet.field'], build_query(facets.values), false
       end
       if field_names = input.delete(:field_names)
-        output[:fl] = append_to_param output[:fl], build_query(field_names), false
+        output[:fl] = append_to_param output[:fl], build_query(field_names)
       end
 
       output.merge input
