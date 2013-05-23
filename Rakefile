@@ -8,12 +8,6 @@ RSpec::Core::RakeTask.new do |spec|
   spec.pattern += FileList['spec/*_spec.rb']
 end
 
-RSpec::Core::RakeTask.new(:rcov) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-  spec.pattern += FileList['spec/*_spec.rb']
-  spec.rcov = true
-end
-
 #task :spec => :check_dependencies
 
 task :default => :spec

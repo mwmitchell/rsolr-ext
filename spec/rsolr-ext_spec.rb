@@ -118,12 +118,12 @@ describe RSolr::Ext do
         c = client
         c.send(:rsolr_request_arguments_for, {}, {})[0].should == nil
       end
-      
+
       it "should split out the params" do
         c = client
         c.send(:rsolr_request_arguments_for, { :q => "foo" }, {})[1].should == { :q => "foo" }
       end
-      
+
       it "should split out the opts" do
         c = client
         c.send(:rsolr_request_arguments_for, {}, {:method => :foo})[2].should == { :method => :foo }
@@ -188,6 +188,16 @@ describe RSolr::Ext do
         solr_params[:fq].should include("range:[1940 TO 2020]")
     end
 
+    it 'should map ft using the filter_names mapping' do
+      solr_params = RSolr::Ext::Request.map(
+        :field_names => [:manu, :color]
+      )
+
+      solr_params[:fl].size.should == 2
+      solr_params[:fl].should include("manu")
+      solr_params[:fl].should include("color")
+    end
+
   end
 
   context 'response' do
@@ -218,7 +228,7 @@ describe RSolr::Ext do
       r.ok?.should == true
       r.docs.size.should == 11
       r.params[:echoParams].should == 'EXPLICIT'
-      
+
       r.docs.previous_page.should == 1
       r.docs.next_page.should == 2
       r.docs.has_previous?.should == false
