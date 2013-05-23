@@ -188,12 +188,12 @@ describe RSolr::Ext do
         solr_params[:fq].should include("range:[1940 TO 2020]")
     end
 
-    it 'should map ft using the filter_names mapping' do
+    it 'should map ft using the field_names mapping' do
       solr_params = RSolr::Ext::Request.map(
         :field_names => [:manu, :color]
       )
 
-      solr_params[:fl].size.should == 2
+      solr_params[:fl].size.should == 10
       solr_params[:fl].should include("manu")
       solr_params[:fl].should include("color")
     end
