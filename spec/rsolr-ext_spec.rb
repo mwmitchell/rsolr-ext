@@ -307,6 +307,12 @@ describe RSolr::Ext do
       r.params[:rows].to_s.should == '999'
     end
 
+    it 'should provide the solr-returned params array and "rows" should be 10' do
+      raw_response = eval(mock_response_with_param_rows_as_array)
+      r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
+      r.rows.to_s.should == '10'
+    end
+
     it 'should provide spelling suggestions for regular spellcheck results' do
       raw_response = eval(mock_response_with_spellcheck)
       r = RSolr::Ext::Response::Base.new(raw_response, '/catalog', {})
