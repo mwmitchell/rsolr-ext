@@ -29,5 +29,9 @@ RSpec.configure do |config|
     %|{'responseHeader'=>{'status'=>0,'QTime'=>3,'params'=>{'spellspellcheck.build'=>'true','spellcheck'=>'true','q'=>'hell','spellcheck.q'=>'hell ultrashar','wt'=>'ruby','spellcheck.collate'=>'true'}},'response'=>{'numFound'=>0,'start'=>0,'docs'=>[]},'spellcheck'=>{'suggestions'=>['hell',{'numFound'=>1,'startOffset'=>0,'endOffset'=>4,'suggestion'=>['dell']},'ultrashar',{'numFound'=>1,'startOffset'=>5,'endOffset'=>14,'suggestion'=>['ultrasharp']},'collation','dell ultrasharp']}}|
   end
 
+  def mock_response_with_param_rows_as_array
+    %|{'responseHeader'=>{'status'=>0,'QTime'=>9,'params'=>{'spellcheck'=>'true','spellcheck.collate'=>'true','wt'=>'ruby','rows'=>[10, 10], 'q'=>'hell ultrashar'}},'response'=>{'numFound'=>0,'start'=>0,'docs'=>[]},'spellcheck'=>{'suggestions'=>['hell',{'numFound'=>1,'startOffset'=>0,'endOffset'=>4,'suggestion'=>['dell']},'ultrashar',{'numFound'=>1,'startOffset'=>5,'endOffset'=>14,'suggestion'=>['ultrasharp']},'collation','dell ultrasharp']}}|
+  end
+
 end
 

@@ -1,27 +1,28 @@
 module RSolr::Ext::Request
-  
+
   module Params
-    
+
     def map input_params
       input = input_params.dup
-      
+
       output = {}
-      
+
       if input[:per_page]
         output[:rows] = input.delete(:per_page).to_i
       end
-      
+
       if page = input.delete(:page)
         raise ':per_page must be set when using :page' unless output[:rows]
         page = page.to_s.to_i-1
         page = page < 1 ? 0 : page
         output[:start] = page * output[:rows]
       end
-      
+
       # remove the input :q params
       output[:q] = input.delete :q
       output[:fq] = input.delete(:fq) if input[:fq]
-      
+      output[:fl] = input.delete(:fl) if input[:fl]
+
       if queries = input.delete(:queries)
         output[:q] = append_to_param output[:q], build_query(queries, false)
       end
@@ -38,13 +39,21 @@ module RSolr::Ext::Request
         output[:facet] = true
         output['facet.field'] = append_to_param output['facet.field'], build_query(facets.values), false
       end
+      if field_names = input.delete(:field_names)
+        output[:fl] = append_to_param output[:fl], build_query(field_names)
+      end
+      if documents_filter = input.delete(:documents_filter)
+        ids = documents_filter.map { |d| "id:#{d}" }
+        output[:fq] = append_to_param output[:fq], build_query(ids)
+      end
+
       output.merge input
     end
-    
+
   end
-  
+
   module QueryHelpers
-    
+
     # Wraps a string around double quotes
     def quote(value)
       %("#{value}")
@@ -58,7 +67,7 @@ module RSolr::Ext::Request
     # builds a solr query fragment
     # if "quote_string" is true, the values will be quoted.
     # if "value" is a string/symbol, the #to_s method is called
-    # if the "value" is an array, each item in the array is 
+    # if the "value" is an array, each item in the array is
     # send to build_query (recursive)
     # if the "value" is a Hash, a fielded query is built
     # where the keys are used as the field names and
@@ -101,10 +110,10 @@ module RSolr::Ext::Request
       values.delete_if{|v|v.nil?}
       auto_join ? values.join(' ') : values.flatten
     end
-    
+
   end
-  
+
   extend QueryHelpers
   extend Params
-  
+
 end
