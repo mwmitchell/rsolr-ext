@@ -30,7 +30,7 @@ module RSolr::Ext::Request
         output[:q] = append_to_param output[:q], build_query(phrases, true)
       end
       if filters = input.delete(:filters)
-        output[:fq] = append_to_param output[:fq], build_query(filters)
+        output[:fq] = append_to_param output[:fq], build_query(filters), false
       end
       if phrase_filters = input.delete(:phrase_filters)
         output[:fq] = append_to_param output[:fq], build_query(phrase_filters, true), false
@@ -41,6 +41,10 @@ module RSolr::Ext::Request
       end
       if field_names = input.delete(:field_names)
         output[:fl] = append_to_param output[:fl], build_query(field_names)
+      end
+      if documents_filter = input.delete(:documents_filter)
+        ids = documents_filter.map { |d| "id:#{d}" }
+        output[:fq] = append_to_param output[:fq], build_query(ids)
       end
 
       output.merge input

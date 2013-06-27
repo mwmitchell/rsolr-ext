@@ -198,6 +198,16 @@ describe RSolr::Ext do
       solr_params[:fl].should include("color")
     end
 
+    it 'should map fq using the documents_filter mapping' do
+      solr_params = RSolr::Ext::Request.map(
+        :documents_filter => [:awesome_document, :freanking_awesome_document]
+      )
+
+      solr_params[:fq].size.should == 49
+      solr_params[:fq].should include("awesome_document")
+      solr_params[:fq].should include("freanking_awesome_document")
+    end
+
   end
 
   context 'response' do
